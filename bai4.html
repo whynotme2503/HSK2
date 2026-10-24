@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài 4</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; user-select: none; }
+    </style>
+</head>
+<body class="bg-[#f5fbf7] min-h-screen text-slate-800 p-3 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-lg overflow-hidden border border-[#e2f2eb]">
+        
+        <!-- HEADER -->
+        <header class="bg-[#52ab98] text-white p-6 md:p-8 text-center relative space-y-2">
+            <h1 class="text-3xl md:text-4xl font-black tracking-wide">Bài 4</h1>
+            <div class="text-xs md:text-sm font-semibold bg-[#2b675b]/30 inline-block px-4 py-1.5 rounded-full border border-white/20">
+                <i class="fa-solid fa-phone mr-1.5 text-amber-300"></i> Liên hệ: 0799052526
+            </div>
+        </header>
+
+        <!-- FORM NHẬP TÊN HỌC VIÊN -->
+        <div id="step-user-info" class="p-6 md:p-10">
+            <div class="max-w-md mx-auto bg-[#f5fbf7] p-6 md:p-8 rounded-2xl border border-[#e2f2eb] shadow-sm space-y-5">
+                <div class="text-center space-y-1">
+                    <h2 class="text-xl font-black text-[#2b675b]"><i class="fa-solid fa-user-pen text-[#52ab98] mr-2"></i>Thông Tin Học Viên</h2>
+                    <p class="text-xs text-slate-500">Vui lòng nhập tên để bắt đầu làm bài tập</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-[#2b675b] uppercase mb-1.5">Họ và tên (*):</label>
+                    <input type="text" id="student-name" placeholder="Ví dụ: Nguyễn Văn A" class="w-full px-4 py-3.5 rounded-xl border border-[#c2e2d5] focus:outline-none focus:ring-2 focus:ring-[#52ab98] font-bold text-slate-800 text-base bg-white">
+                </div>
+                <button onclick="startExercise()" class="w-full bg-[#52ab98] hover:bg-[#439382] active:scale-98 text-white font-black py-4 rounded-xl shadow-md transition text-base">
+                    Bắt Đầu Làm Bài <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- KHU VỰC BÀI TẬP -->
+        <div id="exercise-container" class="hidden p-4 md:p-8 space-y-10">
+
+            <!-- THANH THÔNG TIN HỌC VIÊN & TRÌNH PHÁT AUDIO CHÍNH -->
+            <div class="bg-[#f0f8f4] border-2 border-[#d5ece2] p-4 rounded-2xl space-y-4">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-3">
+                    <div class="text-[#2b675b] font-bold text-sm md:text-base">
+                        <i class="fa-solid fa-user-check text-[#52ab98] mr-2"></i>Học viên: <span id="display-student-name" class="text-[#2b675b] font-black">---</span>
+                    </div>
+                    <div id="score-badge" class="hidden text-sm md:text-base font-black px-4 py-1.5 rounded-xl bg-[#52ab98] text-white shadow">
+                        Trạng thái: Đã nộp bài
+                    </div>
+                </div>
+                <!-- AUDIO PLAYER -->
+                <div class="pt-2 border-t border-[#d5ece2]/60">
+                    <p class="text-xs font-bold text-[#2b675b] mb-1.5"><i class="fa-solid fa-headphones mr-1"></i> Đoạn nghe bài tập (hsk2bai4.mp3):</p>
+                    <audio controls class="w-full h-10">
+                        <source src="hsk2bai4.mp3" type="audio/mpeg">
+                        Trình duyệt của bạn không hỗ trợ thẻ audio.
+                    </audio>
+                </div>
+            </div>
+
+            <!-- BÀI 1: TRẮC NGHIỆM ĐOẠN NGHE -->
+            <section class="space-y-4">
+                <div class="border-l-4 border-[#52ab98] pl-3 py-1">
+                    <h2 class="text-xl font-black text-[#2b675b]">Bài 1: Trắc nghiệm đoạn nghe (7 câu)</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Dựa vào đoạn nghe hsk2bai4.mp3 để chọn đáp án đúng nhất.</p>
+                </div>
+                <div id="part1-questions" class="space-y-6"></div>
+            </section>
+
+            <hr class="border-[#e2f2eb]">
+
+            <!-- BÀI 2: GÕ LẠI TOÀN BỘ ĐOẠN NGHE (CÓ KÈM AUDIO PHỤ ĐỂ TIỆN NGHE) -->
+            <section class="space-y-4">
+                <div class="border-l-4 border-[#52ab98] pl-3 py-1">
+                    <h2 class="text-xl font-black text-[#2b675b]">Bài 2: Gõ lại toàn bộ đoạn nghe</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Nghe kỹ đoạn audio và gõ lại nguyên một đoạn văn hoàn chỉnh.</p>
+                </div>
+                
+                <div id="p2-box" class="bg-[#f9fcfa] p-5 rounded-2xl border border-[#e2f2eb] space-y-4 transition">
+                    <!-- Trình phát audio phụ ngay tại Bài 2 cho tiện -->
+                    <div class="bg-white p-3 rounded-xl border border-[#d5ece2] flex items-center justify-between gap-3">
+                        <span class="text-xs font-bold text-[#2b675b]"><i class="fa-solid fa-headphones mr-1"></i> Nghe lại đoạn audio:</span>
+                        <audio controls class="w-2/3 h-8">
+                            <source src="hsk2bai4 .mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+
+                    <textarea id="p2-textarea" rows="6" placeholder="Nghe và gõ lại toàn bộ đoạn tiếng Trung tại đây..." class="w-full p-4 rounded-xl border border-[#c2e2d5] focus:outline-none focus:ring-2 focus:ring-[#52ab98] font-medium text-base text-slate-800 bg-white leading-relaxed"></textarea>
+                    
+                    <!-- Vùng đối chiếu Bài 2 sau khi nộp -->
+                    <div id="p2-ref-box" class="hidden space-y-3 pt-3 border-t border-slate-200">
+                        <div class="p-4 bg-white rounded-xl border border-slate-200 text-sm space-y-1">
+                            <span class="font-bold text-slate-500 block text-xs">✍ Bài làm của bạn:</span>
+                            <p id="p2-user-text" class="font-medium text-slate-800 leading-relaxed"></p>
+                        </div>
+                        <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-200 text-sm space-y-1">
+                            <span class="font-bold text-emerald-700 block text-xs">✔ Đáp án chuẩn đoạn văn:</span>
+                            <p class="font-bold text-emerald-900 leading-relaxed" id="p2-standard-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NÚT NỘP BÀI -->
+            <div id="submit-section" class="pt-6 border-t border-[#f0f8f4] text-center space-y-3">
+                <button onclick="submitAll()" class="w-full md:w-auto px-10 py-4 bg-[#52ab98] hover:bg-[#439382] active:scale-95 text-white font-black text-lg rounded-2xl shadow-lg transition">
+                    <i class="fa-solid fa-paper-plane mr-2"></i> Nộp Bài & Đối Chiểu Kết Quả
+                </button>
+                <p id="sheet-status-text" class="text-xs text-slate-500 font-medium"></p>
+            </div>
+
+            <!-- FOOTER -->
+            <footer class="text-center text-xs text-[#52ab98] pt-6 border-t border-[#f0f8f4] font-medium">
+                © HSK Online Platform — Liên hệ hỗ trợ: <span class="font-bold text-[#2b675b]">0799052526</span>
+            </footer>
+
+        </div>
+
+    </div>
+
+    <!-- SCRIPT XỬ LÝ -->
+    <script>
+        // LINK GOOGLE APPS SCRIPT ẨN
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw2uxxGt0IdE8amUMHJKGFdS-hRQ6HWak_cazSbM4C2dpTyHTBzUa-mbgWNWuIeVkj0/exec";
+
+        // DỮ LIỆU BÀI 1: TRẮC NGHIỆM
+        const part1Data = [
+            { id: 1, q: "上个星期天，“我”和朋友一起去商场做什么？", opts: ["A. 买衣服和书包", "B. 买水果和吃饭", "C. 看电影和买书"], ans: "A" },
+            { id: 2, q: "朋友为什么要买衣服？", opts: ["A. 因为他下个星期要去外国旅游", "B. 因为他的衣服丢了", "C. 因为他想去学校"], ans: "A" },
+            { id: 3, q: "他们在网上买了几张电影票？", opts: ["A. 两张", "B. 三张", "C. 四张"], ans: "B" },
+            { id: 4, q: "“我”让朋友回去做什么？", opts: ["A. 洗手，再去车站", "B. 吃晚饭，再去接一个朋友", "C. 买衣服，再去接一个朋友"], ans: "B" },
+            { id: 5, q: "朋友为什么不知道怎么过来？", opts: ["A. 因为他坐错了公交车", "B. 因为他没有电影票", "C. 因为他不知道商场在哪儿"], ans: "A" },
+            { id: 6, q: "朋友过了多长时间到了？", opts: ["A. 五分钟", "B. 十分钟", "C. 二十分钟"], ans: "B" },
+            { id: 7, q: "看完电影，他们怎么回去？", opts: ["A. 打车回去", "B. 坐火车回去", "C. 坐公交车回去"], ans: "C" }
+        ];
+
+        // ĐÁP ÁN CHUẨN TOÀN BỘ ĐOẠN VĂN BÀI 2
+        const part2Transcript = "上个星期天，我和朋友一起去商场买东西。因为他下个星期要去外国旅游，所以我们去买衣服，再去车站买火车票。他买了一条黑色的裤子和一个绿色的书包，还试了白色和红色的衣服。我们在网上买了三张电影票。我让他回去，吃晚饭，再去接一个朋友，一起去看电影。没想到，朋友坐错了公交车，不知道怎么过来。我就给他打个电话，对他说要在哪个车站下车。过了十分钟，他已经到了，我们一起看电影，那天的电影非常有意思。看完电影，我们坐公交车回去。我觉得有一点累，但大家都觉得在一起很不错！";
+
+        let studentName = "";
+
+        function startExercise() {
+            studentName = document.getElementById('student-name').value.trim();
+            if (!studentName) {
+                alert("Vui lòng nhập họ và tên của bạn!");
+                return;
+            }
+            document.getElementById('display-student-name').innerText = studentName;
+            document.getElementById('step-user-info').classList.add('hidden');
+            document.getElementById('exercise-container').classList.remove('hidden');
+
+            renderPart1();
+            document.getElementById('p2-standard-text').innerText = part2Transcript;
+        }
+
+        // RENDER BÀI 1
+        function renderPart1() {
+            const container = document.getElementById('part1-questions');
+            container.innerHTML = part1Data.map(item => `
+                <div class="bg-[#f9fcfa] p-5 rounded-2xl border border-[#e2f2eb] space-y-3" id="p1-box-${item.id}">
+                    <div class="font-bold text-slate-900 text-base md:text-lg">
+                        <span class="text-[#2b675b] mr-1.5">Câu ${item.id}:</span> ${item.q}
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        ${item.opts.map(opt => {
+                            const val = opt.charAt(0);
+                            return `
+                                <label class="flex items-center gap-3 p-3.5 bg-white border border-[#e2f2eb] rounded-xl cursor-pointer hover:bg-[#f0f8f4] transition" id="p1-label-${item.id}-${val}">
+                                    <input type="radio" name="p1-q-${item.id}" value="${val}" class="w-4 h-4 text-[#52ab98] focus:ring-[#52ab98]">
+                                    <span class="text-slate-800 font-medium text-sm">${opt}</span>
+                                </label>
+                            `;
+                        }).join('')}
+                    </div>
+                    <!-- Vùng đối chiếu Bài 1 -->
+                    <div id="p1-ref-${item.id}" class="hidden p-3 rounded-xl text-sm font-semibold mt-2"></div>
+                </div>
+            `).join('');
+        }
+
+        // HÀM LÀM SẠCH CHUỖI ĐỂ CHẤM BÀI LINH HOẠT (LOẠI DẤU CÂU VÀ KHOẢNG TRẮNG)
+        function cleanText(str) {
+            if (!str) return "";
+            return str.replace(/[，。？！、\s“”""''’‘!！?？]/g, "").trim().toLowerCase();
+        }
+
+        function submitAll() {
+            let detailsText = [];
+            let p1CorrectCount = 0;
+
+            // 1. CHẤM BÀI 1 (TRẮC NGHIỆM)
+            part1Data.forEach(item => {
+                const selected = document.querySelector(`input[name="p1-q-${item.id}"]:checked`);
+                const userChoice = selected ? selected.value : "Chưa chọn";
+                const isCorrect = userChoice === item.ans;
+
+                if (isCorrect) p1CorrectCount++;
+
+                const box = document.getElementById(`p1-box-${item.id}`);
+                const refBox = document.getElementById(`p1-ref-${item.id}`);
+                refBox.classList.remove('hidden');
+
+                if (isCorrect) {
+                    box.className = "bg-emerald-50/80 p-5 rounded-2xl border-2 border-emerald-400 space-y-3";
+                    refBox.className = "p-3 rounded-xl text-sm font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                    refBox.innerHTML = `✔ Đúng! Bạn chọn [${userChoice}]`;
+                } else {
+                    box.className = "bg-rose-50/80 p-5 rounded-2xl border-2 border-rose-300 space-y-3";
+                    refBox.className = "p-3 rounded-xl text-sm font-bold bg-rose-100 text-rose-800 border border-rose-300";
+                    refBox.innerHTML = `✘ Sai. Bạn chọn [${userChoice}] | Đáp án chuẩn: <span class="underline">${item.ans}</span>`;
+                }
+
+                document.querySelectorAll(`input[name="p1-q-${item.id}"]`).forEach(r => r.disabled = true);
+                detailsText.push(`[Bài 1 - Câu ${item.id}] Chọn: ${userChoice} (${isCorrect ? 'ĐÚNG' : 'SAI'})`);
+            });
+
+            // 2. CHẤM BÀI 2 (ĐOẠN VĂN GÕ LẠI)
+            const textarea = document.getElementById('p2-textarea');
+            const p2Box = document.getElementById('p2-box');
+            const p2RefBox = document.getElementById('p2-ref-box');
+            const p2UserText = document.getElementById('p2-user-text');
+
+            const userVal = textarea.value.trim();
+            const displayVal = userVal || "(Chưa làm)";
+            
+            const cleanedUser = cleanText(userVal);
+            const cleanedRef = cleanText(part2Transcript);
+            const isP2Correct = cleanedUser !== "" && cleanedUser === cleanedRef;
+
+            textarea.disabled = true;
+            textarea.classList.add('hidden');
+            p2RefBox.classList.remove('hidden');
+            p2UserText.innerText = displayVal;
+
+            if (isP2Correct) {
+                p2Box.className = "bg-emerald-50/80 p-5 rounded-2xl border-2 border-emerald-400 space-y-3";
+            } else {
+                p2Box.className = "bg-rose-50/80 p-5 rounded-2xl border-2 border-rose-300 space-y-3";
+            }
+
+            detailsText.push(`[Bài 2 - Gõ đoạn văn] HS gõ: [${displayVal}] | ${isP2Correct ? 'ĐÚNG / KHỚP' : 'CHƯA KHỚP'}`);
+
+            document.getElementById('score-badge').classList.remove('hidden');
+            document.getElementById('summary-bar').scrollIntoView({ behavior: 'smooth' });
+
+            // GỬI KẾT QUẢ NGẦM VỀ GOOGLE SHEETS
+            const statusText = document.getElementById('sheet-status-text');
+            statusText.innerText = "⏳ Đang đồng bộ kết quả về hệ thống...";
+
+            const payload = {
+                studentName: studentName,
+                details: detailsText.join(" || "),
+                submittedAt: new Date().toLocaleString()
+            };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                statusText.innerText = "✅ Đã lưu kết quả thành công vào Google Sheets!";
+                statusText.className = "text-xs font-bold text-[#2b675b] mt-2";
+            }).catch(() => {
+                statusText.innerText = "❌ Lỗi kết nối Google Sheets (Vui lòng kiểm tra lại mạng).";
+                statusText.className = "text-xs font-bold text-rose-600 mt-2";
+            });
+
+            document.getElementById('submit-section').querySelector('button').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
