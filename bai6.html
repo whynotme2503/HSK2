@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BÀI TẬP BÀI 6</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; user-select: none; }
+    </style>
+</head>
+<body class="bg-[#f5fbf7] min-h-screen text-slate-800 p-3 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-lg overflow-hidden border border-[#e2f2eb]">
+        
+        <!-- HEADER -->
+        <header class="bg-[#52ab98] text-white p-6 md:p-8 text-center relative space-y-2">
+            <h1 class="text-3xl md:text-4xl font-black tracking-wide">BÀI TẬP BÀI 6</h1>
+            <div class="text-xs md:text-sm font-semibold bg-[#2b675b]/30 inline-block px-4 py-1.5 rounded-full border border-white/20">
+                <i class="fa-solid fa-phone mr-1.5 text-amber-300"></i> Liên hệ: 0799052526
+            </div>
+        </header>
+
+        <!-- FORM NHẬP TÊN HỌC VIÊN -->
+        <div id="step-user-info" class="p-6 md:p-10">
+            <div class="max-w-md mx-auto bg-[#f5fbf7] p-6 md:p-8 rounded-2xl border border-[#e2f2eb] shadow-sm space-y-5">
+                <div class="text-center space-y-1">
+                    <h2 class="text-xl font-black text-[#2b675b]"><i class="fa-solid fa-user-pen text-[#52ab98] mr-2"></i>Thông Tin Học Viên</h2>
+                    <p class="text-xs text-slate-500">Vui lòng nhập tên để bắt đầu làm bài tập</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-[#2b675b] uppercase mb-1.5">Họ và tên (*):</label>
+                    <input type="text" id="student-name" placeholder="Ví dụ: Nguyễn Văn A" class="w-full px-4 py-3.5 rounded-xl border border-[#c2e2d5] focus:outline-none focus:ring-2 focus:ring-[#52ab98] font-bold text-slate-800 text-base bg-white">
+                </div>
+                <button onclick="startExercise()" class="w-full bg-[#52ab98] hover:bg-[#439382] active:scale-98 text-white font-black py-4 rounded-xl shadow-md transition text-base">
+                    Bắt Đầu Làm Bài <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- KHU VỰC BÀI TẬP -->
+        <div id="exercise-container" class="hidden p-4 md:p-8 space-y-10">
+
+            <!-- THANH THÔNG TIN HỌC VIÊN & TIÊU ĐỀ PHẦN -->
+            <div class="bg-[#f0f8f4] border-2 border-[#d5ece2] p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-3">
+                <div class="text-[#2b675b] font-bold text-sm md:text-base">
+                    <i class="fa-solid fa-user-check text-[#52ab98] mr-2"></i>Học viên: <span id="display-student-name" class="text-[#2b675b] font-black">---</span>
+                </div>
+                <div id="score-badge" class="hidden text-sm md:text-base font-black px-4 py-1.5 rounded-xl bg-[#52ab98] text-white shadow">
+                    Kết quả: <span id="res-score">0 / 20</span> câu đúng
+                </div>
+            </div>
+
+            <!-- PHẦN 1, NGHE -->
+            <div class="border-l-4 border-[#52ab98] pl-3 py-1">
+                <h2 class="text-2xl font-black text-[#2b675b]">PHẦN 1, NGHE</h2>
+            </div>
+
+            <!-- KHU VỰC CHỨA 4 NHÓM CÂU HỎI -->
+            <div id="listening-sections" class="space-y-12"></div>
+
+            <!-- NÚT NỘP BÀI -->
+            <div id="submit-section" class="pt-6 border-t border-[#f0f8f4] text-center space-y-3">
+                <button onclick="submitAll()" class="w-full md:w-auto px-10 py-4 bg-[#52ab98] hover:bg-[#439382] active:scale-95 text-white font-black text-lg rounded-2xl shadow-lg transition">
+                    <i class="fa-solid fa-paper-plane mr-2"></i> Nộp Bài & Xem Kết Quả
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SCRIPT XỬ LÝ -->
+    <script>
+        // CẬP NHẬT ĐÁP ÁN CHUẨN (CBBCA | ABCBA | ABCAB | BABCC)
+        const groupsData = [
+            {
+                audio: "1-5.mp3",
+                title: "Câu 1 - 5 (File nghe: 1-5.mp3)",
+                questions: [
+                    { id: 1, opts: ["A. 八月", "B. 几个月", "C. 九月"], ans: "C" },
+                    { id: 2, opts: ["A. 太远了", "B. 太冷了", "C. 太热了"], ans: "B" },
+                    { id: 3, opts: ["A. 桌子", "B. 椅子", "C. 杯子"], ans: "B" },
+                    { id: 4, opts: ["A. 不到十岁", "B. 四十岁", "C. 十多岁"], ans: "C" },
+                    { id: 5, opts: ["A. 杯子", "B. 北京", "C. 茶杯"], ans: "A" }
+                ]
+            },
+            {
+                audio: "6-10.mp3",
+                title: "Câu 6 - 10 (File nghe: 6-10.mp3)",
+                questions: [
+                    { id: 6, opts: ["A. 张老师", "B. 小王", "C. 王老师"], ans: "A" },
+                    { id: 7, opts: ["A. 大卫", "B. 李先生", "C. 不知道"], ans: "B" },
+                    { id: 8, opts: ["A. 一年前", "B. 一年多了", "C. 两年前"], ans: "C" },
+                    { id: 9, opts: ["A. 很不喜欢", "B. 非常喜欢", "C. 不太喜欢"], ans: "B" },
+                    { id: 10, opts: ["A. 十年", "B. 不到十年", "C. 十几年"], ans: "A" }
+                ]
+            },
+            {
+                audio: "11-15.mp3",
+                title: "Câu 11 - 15 (File nghe: 11-15.mp3)",
+                questions: [
+                    { id: 11, opts: ["A. 左边的", "B. 旁边的", "C. 右边的"], ans: "A" },
+                    { id: 12, opts: ["A. 昨天的", "B. 今天的", "C. 明天的"], ans: "B" },
+                    { id: 13, opts: ["A. 送饭的", "B. 送牛奶的", "C. 送报纸的"], ans: "C" },
+                    { id: 14, opts: ["A. 爸爸妈妈的", "B. 丽丽的", "C. 哥哥的"], ans: "A" },
+                    { id: 15, opts: ["A. 新的", "B. 都不是", "C. 都是"], ans: "B" }
+                ]
+            },
+            {
+                audio: "16-20.mp3",
+                title: "Câu 16 - 20 (File nghe: 16-20.mp3)",
+                questions: [
+                    { id: 16, opts: ["A. 外面", "B. 咖啡馆", "C. 书店"], ans: "B" },
+                    { id: 17, opts: ["A. 鱼", "B. 都爱吃", "C. 晚餐"], ans: "A" },
+                    { id: 18, opts: ["A. 他儿子不喜欢", "B. 椅子有点儿高", "C. 一百块钱"], ans: "B" },
+                    { id: 19, opts: ["A. 读和写还不错", "B. 说和写还不错", "C. 听和说还不错"], ans: "C" },
+                    { id: 20, opts: ["A. 一个", "B. 不吃", "C. 很多"], ans: "C" }
+                ]
+            }
+        ];
+
+        let studentName = "";
+
+        function startExercise() {
+            studentName = document.getElementById('student-name').value.trim();
+            if (!studentName) {
+                alert("Vui lòng nhập họ và tên của bạn!");
+                return;
+            }
+            document.getElementById('display-student-name').innerText = studentName;
+            document.getElementById('step-user-info').classList.add('hidden');
+            document.getElementById('exercise-container').classList.remove('hidden');
+
+            renderExercises();
+        }
+
+        function renderExercises() {
+            const container = document.getElementById('listening-sections');
+            container.innerHTML = groupsData.map((group) => `
+                <div class="bg-[#f0f8f4] p-5 md:p-6 rounded-2xl border-2 border-[#d5ece2] space-y-6">
+                    <div class="bg-white p-4 rounded-xl border border-[#c2e2d5] space-y-2 shadow-sm">
+                        <div class="text-sm font-bold text-[#2b675b]">
+                            <i class="fa-solid fa-headphones mr-2 text-[#52ab98]"></i>${group.title}
+                        </div>
+                        <audio controls class="w-full h-10">
+                            <source src="${group.audio}" type="audio/mpeg">
+                            Trình duyệt của bạn không hỗ trợ thẻ audio.
+                        </audio>
+                    </div>
+
+                    <div class="space-y-4">
+                        ${group.questions.map(item => `
+                            <div class="bg-white p-5 rounded-2xl border border-[#e2f2eb] space-y-3 transition" id="q-box-${item.id}">
+                                <div class="font-bold text-slate-900 text-base md:text-lg">
+                                    <span class="text-[#2b675b] mr-1.5">Câu ${item.id}.</span>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                    ${item.opts.map(opt => {
+                                        const val = opt.charAt(0);
+                                        return `
+                                            <label class="flex items-center gap-3 p-3.5 bg-[#f9fcfa] border border-[#e2f2eb] rounded-xl cursor-pointer hover:bg-[#f0f8f4] transition" id="label-${item.id}-${val}">
+                                                <input type="radio" name="q-${item.id}" value="${val}" class="w-4 h-4 text-[#52ab98] focus:ring-[#52ab98]">
+                                                <span class="text-slate-800 font-medium text-sm">${opt}</span>
+                                            </label>
+                                        `;
+                                    }).join('')}
+                                </div>
+                                <div id="ref-${item.id}" class="hidden p-3 rounded-xl text-sm font-semibold mt-2"></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function submitAll() {
+            let totalCorrect = 0;
+            let totalQuestions = 20;
+
+            groupsData.forEach(group => {
+                group.questions.forEach(item => {
+                    const selected = document.querySelector(`input[name="q-${item.id}"]:checked`);
+                    const userChoice = selected ? selected.value : "Chưa chọn";
+                    const isCorrect = userChoice === item.ans;
+
+                    if (isCorrect) totalCorrect++;
+
+                    const box = document.getElementById(`q-box-${item.id}`);
+                    const refBox = document.getElementById(`ref-${item.id}`);
+                    refBox.classList.remove('hidden');
+
+                    if (isCorrect) {
+                        box.className = "bg-emerald-50/90 p-5 rounded-2xl border-2 border-emerald-400 space-y-3";
+                        refBox.className = "p-3 rounded-xl text-sm font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                        refBox.innerHTML = `✔ Đúng! Bạn đã chọn [${userChoice}]`;
+                    } else {
+                        box.className = "bg-rose-50/90 p-5 rounded-2xl border-2 border-rose-300 space-y-3";
+                        refBox.className = "p-3 rounded-xl text-sm font-bold bg-rose-100 text-rose-800 border border-rose-300";
+                        refBox.innerHTML = `✘ Sai. Bạn chọn [${userChoice}] | Đáp án đúng chuẩn: <span class="underline font-black">${item.ans}</span>`;
+                    }
+
+                    document.querySelectorAll(`input[name="q-${item.id}"]`).forEach(r => r.disabled = true);
+                });
+            });
+
+            document.getElementById('score-badge').classList.remove('hidden');
+            document.getElementById('res-score').innerText = `${totalCorrect} / ${totalQuestions}`;
+            document.getElementById('score-badge').scrollIntoView({ behavior: 'smooth' });
+
+            document.getElementById('submit-section').querySelector('button').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
