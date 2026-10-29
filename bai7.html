@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BÀI TẬP BÀI 6</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; user-select: none; }
+        .sticky-audio { position: sticky; top: 10px; z-index: 50; backdrop-filter: blur(8px); }
+    </style>
+</head>
+<body class="bg-[#f5fbf7] min-h-screen text-slate-800 p-3 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-lg overflow-hidden border border-[#e2f2eb]">
+        
+        <!-- HEADER -->
+        <header class="bg-[#52ab98] text-white p-6 md:p-8 text-center relative space-y-2">
+            <h1 class="text-3xl md:text-4xl font-black tracking-wide">BÀI TẬP BÀI 6</h1>
+            <div class="text-xs md:text-sm font-semibold bg-[#2b675b]/30 inline-block px-4 py-1.5 rounded-full border border-white/20">
+                <i class="fa-solid fa-phone mr-1.5 text-amber-300"></i> Liên hệ: 0799052526
+            </div>
+        </header>
+
+        <!-- FORM NHẬP TÊN HỌC VIÊN -->
+        <div id="step-user-info" class="p-6 md:p-10">
+            <div class="max-w-md mx-auto bg-[#f5fbf7] p-6 md:p-8 rounded-2xl border border-[#e2f2eb] shadow-sm space-y-5">
+                <div class="text-center space-y-1">
+                    <h2 class="text-xl font-black text-[#2b675b]"><i class="fa-solid fa-user-pen text-[#52ab98] mr-2"></i>Thông Tin Học Viên</h2>
+                    <p class="text-xs text-slate-500">Vui lòng nhập họ và tên để bắt đầu làm bài tập</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-[#2b675b] uppercase mb-1.5">Họ và tên (*):</label>
+                    <input type="text" id="student-name" placeholder="Ví dụ: Nguyễn Văn A" class="w-full px-4 py-3.5 rounded-xl border border-[#c2e2d5] focus:outline-none focus:ring-2 focus:ring-[#52ab98] font-bold text-slate-800 text-base bg-white">
+                </div>
+                <button onclick="startExercise()" class="w-full bg-[#52ab98] hover:bg-[#439382] active:scale-98 text-white font-black py-4 rounded-xl shadow-md transition text-base">
+                    Bắt Đầu Làm Bài <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- KHU VỰC BÀI TẬP (ẨN CHO ĐẾN KHI NHẬP TÊN) -->
+        <div id="exercise-container" class="hidden p-4 md:p-8 space-y-8">
+
+            <!-- TRÌNH PHÁT AUDIO GHIM THÔNG MINH & TÊN HỌC VIÊN -->
+            <div class="sticky-audio bg-[#f0f8f4]/95 border-2 border-[#52ab98] p-4 rounded-2xl shadow-md space-y-2">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-2">
+                    <div class="text-[#2b675b] font-bold text-sm md:text-base flex items-center">
+                        <i class="fa-solid fa-user-check text-[#52ab98] mr-2"></i>Học viên: <span id="display-student-name" class="text-[#2b675b] font-black ml-1">---</span>
+                    </div>
+                    <div id="score-badge" class="hidden text-sm md:text-base font-black px-4 py-1.5 rounded-xl bg-[#52ab98] text-white shadow">
+                        Kết quả: <span id="res-score">0 / 10</span> câu đúng
+                    </div>
+                </div>
+                <div class="pt-1 flex items-center justify-between gap-2">
+                    <span class="text-xs font-bold text-[#2b675b]"><i class="fa-solid fa-headphones mr-1"></i> File nghe: nghe6.mp3</span>
+                </div>
+                <audio controls class="w-full h-11">
+                    <source src="nghe6.mp3" type="audio/mpeg">
+                    Trình duyệt của bạn không hỗ trợ thẻ audio.
+                </audio>
+            </div>
+
+            <!-- TIÊU ĐỀ PHẦN BÀI TẬP -->
+            <div class="border-l-4 border-[#52ab98] pl-3 py-1">
+                <h2 class="text-xl font-black text-[#2b675b]">Nghe đoạn văn dài và trả lời 10 câu hỏi trắc nghiệm</h2>
+            </div>
+
+            <!-- DANH SÁCH 10 CÂU HỎI -->
+            <div id="questions-list" class="space-y-6"></div>
+
+            <!-- SCRIPT CỦA FILE NGHE (ẨN TRƯỚC KHI NỘP, HIỆN SAU KHI NỘP) -->
+            <div id="script-section" class="hidden bg-[#f0f8f4] border-2 border-[#d5ece2] p-6 rounded-2xl space-y-3">
+                <h3 class="text-lg font-black text-[#2b675b]"><i class="fa-solid fa-file-lines mr-2"></i>Bản Script Đoạn Nghe:</h3>
+                <p class="text-slate-700 leading-relaxed text-base font-serif bg-white p-5 rounded-xl border border-[#c2e2d5]">
+                    上个星期六是小明爷爷的生日。小明和爸爸、妈妈早就准备好了礼物，但是小明还没给爷爷买生日蛋糕，所以他想去商场买一个蛋糕，再去酒店接爷爷和奶奶。<br><br>
+                    早上九点，小明跟妈妈一起坐公交车去商场。因为商场不远，所以他们没有打车。到了商场，小明看见一条黑色的裤子和一条白色的裤子。他觉得黑色的不错，但是妈妈觉得白色的更好看。小明试了两条裤子，最后买了白色的，还给爷爷买了一个绿色的书包。<br><br>
+                    买完东西以后，他们在商场下面的一间奶茶店休息了一会儿。妈妈让小明自己拿好东西。但是，他们出来的时候，他们买的东西真的还在店里。他也没找到手机，所以进去找了一次。但手机在自己的书包里。<br><br>
+                    下午，小明和妈妈准备去酒店接爷爷和奶奶。小明想买电影票，晚上跟大家一起看电影，但是爷爷说，他更想跟家人一起吃饭、看电视。因为酒店离商场有点远，所以他们打车过去。<br><br>
+                    到了酒店，小明高高兴兴地拿出礼物送给爷爷和奶奶。爷爷打开礼物，看见绿色的书包，非常高兴。奶奶拿出自己准备的画笔，送给爷爷。她说：“生日快乐！这是给你的礼物。”<br><br>
+                    晚上，大家一起吃了饭。小明觉得不舒服因为他没买蛋糕，这次生日不高兴，但是爷爷说：“有你们在一起，我已经很快乐了！”听了爷爷的话，小明就懂了，生日礼物不错，一家人在一起已经非常高兴了。
+                </p>
+            </div>
+
+            <!-- NÚT NỘP BÀI -->
+            <div id="submit-section" class="pt-6 border-t border-[#f0f8f4] text-center space-y-3">
+                <button onclick="submitAll()" class="w-full md:w-auto px-10 py-4 bg-[#52ab98] hover:bg-[#439382] active:scale-95 text-white font-black text-lg rounded-2xl shadow-lg transition">
+                    <i class="fa-solid fa-paper-plane mr-2"></i> Nộp Bài & Xem Kết Quả
+                </button>
+                <p id="sheet-status-text" class="text-xs text-slate-500 font-medium"></p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SCRIPT XỬ LÝ -->
+    <script>
+        // LINK GOOGLE APPS SCRIPT
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzXu0GEzXcLoLeX-i3MqZS7QnkszUJF2UxoKwkYENKebKw0rbAO_LXOvAmotPj0QX77/exec";
+
+        const questionsData = [
+            {
+                id: 1,
+                q: "小明为什么去商场？",
+                opts: ["A. 买生日蛋糕和礼物。", "B. 买电影票。", "C. 找爷爷。", "D. 买画笔。"],
+                ans: "A"
+            },
+            {
+                id: 2,
+                q: "小明给自己买了什么颜色的裤子？",
+                opts: ["A. 黑色的。", "B. 白色的。", "C. 绿色的。", "D. 红色的。"],
+                ans: "B"
+            },
+            {
+                id: 3,
+                q: "小明给爷爷买了什么？",
+                opts: ["A. 一条裤子。", "B. 一支画笔。", "C. 一个书包。", "D. 一张电影票。"],
+                ans: "C"
+            },
+            {
+                id: 4,
+                q: "小明和妈妈出来的时候，买的东西在哪里？",
+                opts: ["A. 在酒店。", "B. 在家里。", "C. 在奶茶店里。", "D. 在公交车上。"],
+                ans: "C"
+            },
+            {
+                id: 5,
+                q: "小明的手机在哪里？",
+                opts: ["A. 在书包里。", "B. 在奶茶店里。", "C. 在酒店里。", "D. 在妈妈手里。"],
+                ans: "A"
+            },
+            {
+                id: 6,
+                q: "小明和妈妈怎么去酒店？",
+                opts: ["A. 坐公交车。", "B. 打车。", "C. 走路。", "D. 坐飞机。"],
+                ans: "B"
+            },
+            {
+                id: 7,
+                q: "爷爷晚上想做什么？",
+                opts: ["A. 看电影。", "B. 去商场。", "C. 买生日蛋糕。", "D. 吃饭、看电视。"],
+                ans: "D"
+            },
+            {
+                id: 8,
+                q: "奶奶把画笔送给谁？",
+                opts: ["A. 小明。", "B. 爷爷。", "C. 妈妈。", "D. 爸爸。"],
+                ans: "B"
+            },
+            {
+                id: 9,
+                q: "小明为什么不高兴？",
+                opts: ["A. 因为他没买蛋糕。", "B. 因为爷爷不喜欢书包。", "C. 因为奶奶没来。", "D. 因为他没吃饭。"],
+                ans: "A"
+            },
+            {
+                id: 10,
+                q: "爷爷觉得什么最重要？",
+                opts: ["A. 买很多礼物。", "B. 去商场买东西。", "C. 一家人在一起。", "D. 晚上看电影。"],
+                ans: "C"
+            }
+        ];
+
+        let studentName = "";
+
+        function startExercise() {
+            studentName = document.getElementById('student-name').value.trim();
+            if (!studentName) {
+                alert("Vui lòng nhập họ và tên của bạn!");
+                return;
+            }
+            document.getElementById('display-student-name').innerText = studentName;
+            document.getElementById('step-user-info').classList.add('hidden');
+            document.getElementById('exercise-container').classList.remove('hidden');
+
+            renderQuestions();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-list');
+            container.innerHTML = questionsData.map(item => `
+                <div class="bg-white p-5 rounded-2xl border border-[#e2f2eb] space-y-3 transition" id="q-box-${item.id}">
+                    <div class="font-bold text-slate-900 text-base md:text-lg">
+                        <span class="text-[#2b675b] mr-1.5">Câu ${item.id}.</span> ${item.q}
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        ${item.opts.map(opt => {
+                            const val = opt.charAt(0);
+                            return `
+                                <label class="flex items-center gap-3 p-3.5 bg-[#f9fcfa] border border-[#e2f2eb] rounded-xl cursor-pointer hover:bg-[#f0f8f4] transition" id="label-${item.id}-${val}">
+                                    <input type="radio" name="q-${item.id}" value="${val}" class="w-4 h-4 text-[#52ab98] focus:ring-[#52ab98]">
+                                    <span class="text-slate-800 font-medium text-sm">${opt}</span>
+                                </label>
+                            `;
+                        }).join('')}
+                    </div>
+                    <!-- Vùng đối chiếu kết quả sau khi nộp -->
+                    <div id="ref-${item.id}" class="hidden p-3 rounded-xl text-sm font-semibold mt-2"></div>
+                </div>
+            `).join('');
+        }
+
+        function submitAll() {
+            let totalCorrect = 0;
+            let detailsText = [];
+
+            questionsData.forEach(item => {
+                const selected = document.querySelector(`input[name="q-${item.id}"]:checked`);
+                const userChoice = selected ? selected.value : "Chưa chọn";
+                const isCorrect = userChoice === item.ans;
+
+                if (isCorrect) totalCorrect++;
+
+                const box = document.getElementById(`q-box-${item.id}`);
+                const refBox = document.getElementById(`ref-${item.id}`);
+                refBox.classList.remove('hidden');
+
+                if (isCorrect) {
+                    box.className = "bg-emerald-50/90 p-5 rounded-2xl border-2 border-emerald-400 space-y-3";
+                    refBox.className = "p-3 rounded-xl text-sm font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                    refBox.innerHTML = `✔ Đúng! Bạn đã chọn [${userChoice}]`;
+                } else {
+                    box.className = "bg-rose-50/90 p-5 rounded-2xl border-2 border-rose-300 space-y-3";
+                    refBox.className = "p-3 rounded-xl text-sm font-bold bg-rose-100 text-rose-800 border border-rose-300";
+                    refBox.innerHTML = `✘ Sai. Bạn chọn [${userChoice}] | Đáp án đúng chuẩn: <span class="underline font-black">${item.ans}</span>`;
+                }
+
+                document.querySelectorAll(`input[name="q-${item.id}"]`).forEach(r => r.disabled = true);
+                detailsText.push(`[Câu ${item.id}] Chọn: ${userChoice} (${isCorrect ? 'ĐÚNG' : 'SAI'})`);
+            });
+
+            // Hiển thị điểm số và bản script
+            document.getElementById('score-badge').classList.remove('hidden');
+            document.getElementById('res-score').innerText = `${totalCorrect} / 10`;
+            document.getElementById('script-section').classList.remove('hidden');
+            document.getElementById('score-badge').scrollIntoView({ behavior: 'smooth' });
+
+            // GỬI KẾT QUẢ NGẦM VỀ GOOGLE SHEETS BẰNG SENDBEACON
+            const statusText = document.getElementById('sheet-status-text');
+            statusText.innerText = "⏳ Đang đồng bộ kết quả về hệ thống...";
+
+            const payload = {
+                studentName: studentName,
+                details: detailsText.join(" || "),
+                submittedAt: new Date().toLocaleString()
+            };
+
+            const blob = new Blob([JSON.stringify(payload)], { type: 'text/plain' });
+            
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon(SCRIPT_URL, blob);
+                statusText.innerText = "✅ Đã lưu kết quả thành công vào Google Sheets!";
+                statusText.className = "text-xs font-bold text-[#2b675b] mt-2";
+            } else {
+                fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: blob }).then(() => {
+                    statusText.innerText = "✅ Đã lưu kết quả thành công vào Google Sheets!";
+                    statusText.className = "text-xs font-bold text-[#2b675b] mt-2";
+                });
+            }
+
+            document.getElementById('submit-section').querySelector('button').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
