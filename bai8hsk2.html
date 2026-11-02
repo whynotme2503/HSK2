@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BÀI TẬP BÀI 8</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; user-select: none; }
+        .sticky-audio { position: sticky; top: 10px; z-index: 50; backdrop-filter: blur(8px); }
+    </style>
+</head>
+<body class="bg-[#f5fbf7] min-h-screen text-slate-800 p-3 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-lg overflow-hidden border border-[#e2f2eb]">
+        
+        <!-- HEADER -->
+        <header class="bg-[#52ab98] text-white p-6 md:p-8 text-center relative space-y-2">
+            <h1 class="text-3xl md:text-4xl font-black tracking-wide">BÀI TẬP BÀI 8</h1>
+            <div class="text-xs md:text-sm font-semibold bg-[#2b675b]/30 inline-block px-4 py-1.5 rounded-full border border-white/20">
+                <i class="fa-solid fa-phone mr-1.5 text-amber-300"></i> Liên hệ: 0799052526
+            </div>
+        </header>
+
+        <!-- FORM NHẬP TÊN HỌC VIÊN -->
+        <div id="step-user-info" class="p-6 md:p-10">
+            <div class="max-w-md mx-auto bg-[#f5fbf7] p-6 md:p-8 rounded-2xl border border-[#e2f2eb] shadow-sm space-y-5">
+                <div class="text-center space-y-1">
+                    <h2 class="text-xl font-black text-[#2b675b]"><i class="fa-solid fa-user-pen text-[#52ab98] mr-2"></i>Thông Tin Học Viên</h2>
+                    <p class="text-xs text-slate-500">Vui lòng nhập họ và tên để bắt đầu làm bài tập</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-[#2b675b] uppercase mb-1.5">Họ và tên (*):</label>
+                    <input type="text" id="student-name" placeholder="Ví dụ: Nguyễn Văn A" class="w-full px-4 py-3.5 rounded-xl border border-[#c2e2d5] focus:outline-none focus:ring-2 focus:ring-[#52ab98] font-bold text-slate-800 text-base bg-white">
+                </div>
+                <button onclick="startExercise()" class="w-full bg-[#52ab98] hover:bg-[#439382] active:scale-98 text-white font-black py-4 rounded-xl shadow-md transition text-base">
+                    Bắt Đầu Làm Bài <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- KHU VỰC BÀI TẬP (ẨN TRƯỚC KHI NHẬP TÊN) -->
+        <div id="exercise-container" class="hidden p-4 md:p-8 space-y-10">
+
+            <!-- TRÌNH PHÁT AUDIO GHIM THÔNG MINH & TÊN HỌC VIÊN -->
+            <div class="sticky-audio bg-[#f0f8f4]/95 border-2 border-[#52ab98] p-4 rounded-2xl shadow-md space-y-2">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-2">
+                    <div class="text-[#2b675b] font-bold text-sm md:text-base flex items-center">
+                        <i class="fa-solid fa-user-check text-[#52ab98] mr-2"></i>Học viên: <span id="display-student-name" class="text-[#2b675b] font-black ml-1">---</span>
+                    </div>
+                    <div id="score-badge" class="hidden text-sm md:text-base font-black px-4 py-1.5 rounded-xl bg-[#52ab98] text-white shadow">
+                        Kết quả: <span id="res-score">0 / 11</span> câu đúng
+                    </div>
+                </div>
+                <div class="pt-1 flex items-center justify-between gap-2">
+                    <span class="text-xs font-bold text-[#2b675b]"><i class="fa-solid fa-headphones mr-1"></i> File nghe: bai8hsk2.mp3</span>
+                </div>
+                <audio controls class="w-full h-11">
+                    <source src="bai8hsk2.mp3" type="audio/mpeg">
+                    Trình duyệt của bạn không hỗ trợ thẻ audio.
+                </audio>
+            </div>
+
+            <!-- BÀI 1: NGHE VÀ GÕ LẠI ĐOẠN VĂN -->
+            <section class="space-y-4">
+                <div class="border-l-4 border-[#52ab98] pl-3 py-1">
+                    <h2 class="text-xl font-black text-[#2b675b]">Bài 1. Nghe và gõ lại toàn bộ đoạn văn</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Nghe kỹ file audio phía trên và gõ lại. Hệ thống chỉ chấm đúng chữ/từ vựng, không tính dấu câu.</p>
+                </div>
+                
+                <div id="p1-box" class="bg-[#f9fcfa] p-5 rounded-2xl border border-[#e2f2eb] space-y-4 transition">
+                    <textarea id="p1-textarea" rows="6" placeholder="Nghe và gõ lại đoạn tiếng Trung tại đây..." class="w-full p-4 rounded-xl border border-[#c2e2d5] focus:outline-none focus:ring-2 focus:ring-[#52ab98] font-medium text-base text-slate-800 bg-white leading-relaxed"></textarea>
+                    
+                    <!-- Vùng đối chiếu Bài 1 sau khi nộp -->
+                    <div id="p1-ref-box" class="hidden space-y-3 pt-3 border-t border-slate-200">
+                        <div class="p-4 bg-white rounded-xl border border-slate-200 text-sm space-y-1">
+                            <span class="font-bold text-slate-500 block text-xs">✍ Bài làm của bạn:</span>
+                            <p id="p1-user-text" class="font-medium text-slate-800 leading-relaxed"></p>
+                        </div>
+                        <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-200 text-sm space-y-1">
+                            <span class="font-bold text-emerald-700 block text-xs">✔ Đáp án chuẩn đoạn văn:</span>
+                            <p class="font-bold text-emerald-900 leading-relaxed" id="p1-standard-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="border-[#e2f2eb]">
+
+            <!-- BÀI 2: SẮP XẾP CÂU -->
+            <section class="space-y-4">
+                <div class="border-l-4 border-[#52ab98] pl-3 py-1">
+                    <h2 class="text-xl font-black text-[#2b675b]">Bài 2. Sắp xếp từ thành câu hoàn chỉnh (10 câu)</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Nhập lại câu hoàn chỉnh bằng tiếng Trung theo các từ xáo trộn.</p>
+                </div>
+                <div id="part2-list" class="space-y-4"></div>
+            </section>
+
+            <!-- NÚT NỘP BÀI -->
+            <div id="submit-section" class="pt-6 border-t border-[#f0f8f4] text-center space-y-3">
+                <button onclick="submitAll()" class="w-full md:w-auto px-10 py-4 bg-[#52ab98] hover:bg-[#439382] active:scale-95 text-white font-black text-lg rounded-2xl shadow-lg transition">
+                    <i class="fa-solid fa-paper-plane mr-2"></i> Nộp Bài & Xem Kết Quả
+                </button>
+                <p id="sheet-status-text" class="text-xs text-slate-500 font-medium"></p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SCRIPT XỬ LÝ -->
+    <script>
+        // LINK GOOGLE APPS SCRIPT
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuJLYTXKCO4vAnVICIu2x3-PZvlmCA3yjfX8SoXzcphrIFZrPzMa9r2OMPqb8EqO0n/exec";
+
+        const part1Transcript = "今天是爷爷的生日，我和丈夫一起去商场买礼物。丈夫想买一块黑色的手表，我想买一个书包。我们在商场走了很长时间，因为我觉得红色的书包不错，丈夫觉得绿色的更好看。想了一会儿，我买了一个红色的书包，丈夫买了一块黑色的手表。\n\n下午，我们拿礼物到爷爷家。奶奶已经准备了很多菜，有鱼，也有肉，还有蛋糕。爷爷在房间里休息，奶奶去叫爷爷快出来吃饭。我们进去后，就拿出礼物送给爷爷，他非常高兴。奶奶做的午饭太好吃了，我觉得比饭馆更好吃。\n\n晚上，我们一家人一起去饭馆吃饭。爷爷很快乐，还给每个人准备了礼物。吃完饭，我们一起回去。虽然今天花了很多时间，大家都很累，但是这次生日很有意思。";
+
+        const part2Data = [
+            { id: 1, words: "好看 / 红色的 / 比 / 绿色的书包 / 更", ans: "绿色的书包比红色的更好看。" },
+            { id: 2, words: "丈夫跑 / 我 / 得 / 比 / 快", ans: ["我比丈夫跑得快。", "丈夫跑得比我快。"] },
+            { id: 3, words: "黑色的贵 / 白色的裤子 / 比", ans: "白色的裤子比黑色的贵。" },
+            { id: 4, words: "爷爷 / 奶奶 / 吃 / 比 / 更喜欢 / 鱼", ans: "爷爷比奶奶更喜欢吃鱼。" },
+            { id: 5, words: "快乐地 / 我们 / 到学校 / 一起 / 走", ans: "我们快乐地一起走到学校。" },
+            { id: 6, words: "慢慢地 / 丈夫 / 走 / 过来", ans: "丈夫慢慢地走过来。" },
+            { id: 7, words: "高兴地 / 奶奶 / 礼物 / 打开", ans: "奶奶高兴地打开礼物。" },
+            { id: 8, words: "我 / 中文  / 不错 / 说 / 得 / 不错", ans: "我中文说得不错。" },
+            { id: 9, words: "丈夫 / 足球 / 踢 / 得 / 很好", ans: "丈夫足球踢得很好。" },
+            { id: 10, words: "爷爷 / 今天 / 玩 / 高兴 / 得 / 很", ans: "爷爷今天玩得很高兴。" }
+        ];
+
+        let studentName = "";
+
+        function startExercise() {
+            studentName = document.getElementById('student-name').value.trim();
+            if (!studentName) {
+                alert("Vui lòng nhập họ và tên của bạn!");
+                return;
+            }
+            document.getElementById('display-student-name').innerText = studentName;
+            document.getElementById('step-user-info').classList.add('hidden');
+            document.getElementById('exercise-container').classList.remove('hidden');
+
+            document.getElementById('p1-standard-text').innerText = part1Transcript;
+            renderPart2();
+        }
+
+        function renderPart2() {
+            const container = document.getElementById('part2-list');
+            container.innerHTML = part2Data.map(item => `
+                <div class="bg-[#f9fcfa] p-4 md:p-5 rounded-2xl border border-[#e2f2eb] space-y-3" id="p2-box-${item.id}">
+                    <div class="font-bold text-slate-800 text-base">
+                        <span class="text-[#2b675b] mr-1.5">2.${item.id}.</span> Các từ: <span class="text-indigo-700 font-mono bg-indigo-50 px-2 py-0.5 rounded">${item.words}</span>
+                    </div>
+                    <textarea id="p2-ans-${item.id}" rows="2" placeholder="Nhập câu hoàn chỉnh..." class="w-full p-3.5 rounded-xl border border-[#c2e2d5] focus:outline-none focus:ring-2 focus:ring-[#52ab98] font-medium text-base text-slate-800 bg-white"></textarea>
+                    
+                    <!-- Vùng hiện kết quả đối chiếu -->
+                    <div id="p2-ref-${item.id}" class="hidden space-y-2 pt-2 border-t border-slate-200">
+                        <div class="p-3 bg-white rounded-xl border border-slate-200 text-sm">
+                            <span class="font-bold text-slate-500 block text-xs mb-1">✍ Bài làm của bạn:</span>
+                            <span id="user-ans-text-${item.id}" class="font-medium text-slate-800"></span>
+                        </div>
+                        <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-sm">
+                            <span class="font-bold text-emerald-700 block text-xs mb-1">✔ Đáp án chuẩn:</span>
+                            <span class="font-bold text-emerald-900">${Array.isArray(item.ans) ? item.ans.join(' hoặc ') : item.ans}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Hàm làm sạch chuỗi: loại bỏ toàn bộ dấu câu, khoảng trắng để không chấm dấu câu
+        function cleanText(str) {
+            if (!str) return "";
+            return str.replace(/[，。？！、\s“”""''’‘!！?？]/g, "").trim().toLowerCase();
+        }
+
+        function submitAll() {
+            try {
+                let totalCorrect = 0;
+                let totalQuestions = 11; // 1 (Bài 1) + 10 (Bài 2)
+                let detailsText = [];
+
+                // 1. CHẤM BÀI 1 (NGHE GÕ LẠI)
+                const textareaP1 = document.getElementById('p1-textarea');
+                const p1Box = document.getElementById('p1-box');
+                const p1RefBox = document.getElementById('p1-ref-box');
+                const p1UserText = document.getElementById('p1-user-text');
+
+                const userValP1 = textareaP1.value.trim();
+                const displayValP1 = userValP1 || "(Chưa làm)";
+                const cleanedUserP1 = cleanText(userValP1);
+                const cleanedRefP1 = cleanText(part1Transcript);
+                const isP1Correct = cleanedUserP1 !== "" && cleanedUserP1 === cleanedRefP1;
+
+                if (isP1Correct) totalCorrect++;
+
+                textareaP1.disabled = true;
+                textareaP1.classList.add('hidden');
+                p1RefBox.classList.remove('hidden');
+                p1UserText.innerText = displayValP1;
+
+                if (isP1Correct) {
+                    p1Box.className = "bg-emerald-50/90 p-5 rounded-2xl border-2 border-emerald-400 space-y-3";
+                } else {
+                    p1Box.className = "bg-rose-50/90 p-5 rounded-2xl border-2 border-rose-300 space-y-3";
+                }
+
+                detailsText.push(`[Bài 1 - Nghe gõ] HS gõ: [${displayValP1}] | ${isP1Correct ? 'ĐÚNG' : 'SAI'}`);
+
+                // 2. CHẤM BÀI 2 (SẮP XẾP CÂU)
+                part2Data.forEach(item => {
+                    const textarea = document.getElementById(`p2-ans-${item.id}`);
+                    const box = document.getElementById(`p2-box-${item.id}`);
+                    const refBox = document.getElementById(`p2-ref-${item.id}`);
+                    const userAnsText = document.getElementById(`user-ans-text-${item.id}`);
+
+                    if (!textarea || !box || !refBox || !userAnsText) return;
+
+                    const userVal = textarea.value.trim();
+                    const displayVal = userVal || "(Chưa làm)";
+                    const cleanedUser = cleanText(userVal);
+
+                    // Kiểm tra khớp với chuỗi đơn hoặc mảng nhiều đáp án đúng
+                    let isCorrect = false;
+                    if (Array.isArray(item.ans)) {
+                        isCorrect = item.ans.some(ansStr => cleanedUser === cleanText(ansStr));
+                    } else {
+                        isCorrect = cleanedUser === cleanText(item.ans);
+                    }
+
+                    if (isCorrect) totalCorrect++;
+
+                    textarea.disabled = true;
+                    textarea.classList.add('hidden');
+                    refBox.classList.remove('hidden');
+                    userAnsText.innerText = displayVal;
+
+                    if (isCorrect) {
+                        box.className = "bg-emerald-50/90 p-4 md:p-5 rounded-2xl border-2 border-emerald-400 space-y-3";
+                    } else {
+                        box.className = "bg-rose-50/90 p-4 md:p-5 rounded-2xl border-2 border-rose-300 space-y-3";
+                    }
+
+                    detailsText.push(`[Bài 2 - Câu ${item.id}] Sắp xếp: [${displayVal}] (${isCorrect ? 'ĐÚNG' : 'SAI'})`);
+                });
+
+                // Hiển thị tổng điểm
+                const scoreBadge = document.getElementById('score-badge');
+                const resScore = document.getElementById('res-score');
+                if (scoreBadge && resScore) {
+                    scoreBadge.classList.remove('hidden');
+                    resScore.innerText = `${totalCorrect} / ${totalQuestions}`;
+                    scoreBadge.scrollIntoView({ behavior: 'smooth' });
+                }
+
+                // GỬI KẾT QUẢ NGẦM VỀ GOOGLE SHEETS BẰNG SENDBEACON (4 CỘT)
+                const statusText = document.getElementById('sheet-status-text');
+                if (statusText) {
+                    statusText.innerText = "⏳ Đang đồng bộ kết quả về hệ thống...";
+                }
+
+                const payload = {
+                    lessonName: "Bài 8",
+                    studentName: studentName,
+                    score: `${totalCorrect} / ${totalQuestions}`,
+                    details: detailsText.join(" || "),
+                    submittedAt: new Date().toLocaleString()
+                };
+
+                const blob = new Blob([JSON.stringify(payload)], { type: 'text/plain' });
+                
+                if (navigator.sendBeacon) {
+                    navigator.sendBeacon(SCRIPT_URL, blob);
+                    if (statusText) {
+                        statusText.innerText = "✅ Đã lưu kết quả thành công vào Google Sheets!";
+                        statusText.className = "text-xs font-bold text-[#2b675b] mt-2";
+                    }
+                } else {
+                    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: blob }).then(() => {
+                        if (statusText) {
+                            statusText.innerText = "✅ Đã lưu kết quả thành công vào Google Sheets!";
+                            statusText.className = "text-xs font-bold text-[#2b675b] mt-2";
+                        }
+                    });
+                }
+
+                const submitBtn = document.querySelector('#submit-section button');
+                if (submitBtn) {
+                    submitBtn.classList.add('hidden');
+                }
+            } catch (err) {
+                console.error("Lỗi khi nộp bài:", err);
+                alert("Có lỗi xảy ra khi nộp bài, vui lòng kiểm tra lại console.");
+            }
+        }
+    </script>
+</body>
+</html>
