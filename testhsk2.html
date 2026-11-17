@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiểm tra cuối khóa HSK2</title>
+<style>
+  :root{
+    --bg:#eaf4ea;
+    --bg2:#dfeedf;
+    --card:#ffffff;
+    --ink:#24402a;
+    --ink-soft:#4e6b55;
+    --mint:#b7ddc0;
+    --mint-soft:#d6ebd9;
+    --mint-line:#c3e0c9;
+    --green:#5f9e6d;
+    --green-dark:#3f7a4c;
+    --ok:#4e9a62;
+    --ok-bg:#e4f3e6;
+    --no:#c97b74;
+    --no-bg:#fbeae8;
+    --shadow:0 2px 10px rgba(63,122,76,.08);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",system-ui,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:
+      radial-gradient(900px 400px at 10% -10%, #f3faf3 0%, rgba(243,250,243,0) 70%),
+      linear-gradient(180deg,var(--bg) 0%, var(--bg2) 100%);
+    background-attachment:fixed;
+    color:var(--ink);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:28px 18px 140px}
+
+  /* ---------- header ---------- */
+  header{
+    background:linear-gradient(135deg,#cfe8d4 0%,#b7ddc0 100%);
+    border:1px solid var(--mint-line);
+    border-radius:22px;
+    padding:30px 28px;
+    text-align:center;
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+  header:after{
+    content:"汉语";
+    position:absolute;right:16px;bottom:-14px;
+    font-size:72px;font-weight:800;color:rgba(255,255,255,.35);
+    letter-spacing:4px;line-height:1;
+  }
+  h1{margin:0 0 6px;font-size:28px;letter-spacing:.2px;color:#2d5437}
+  .sub{margin:0;color:#44704f;font-size:14.5px}
+  .who{margin:12px 0 0;font-size:13.5px;font-weight:700;color:#35603f;display:none}
+  .who.on{display:block}
+
+  /* ---------- gate ---------- */
+  .gate{
+    background:var(--card);border:1px solid var(--mint-line);border-radius:20px;
+    padding:28px 24px;margin-top:20px;box-shadow:var(--shadow);text-align:center;
+  }
+  .gate h2{margin:0 0 6px;font-size:19px;color:#2d5437}
+  .gate p{margin:0 0 18px;font-size:14px;color:var(--ink-soft)}
+  .gate .row{display:flex;gap:10px;max-width:460px;margin:0 auto;flex-wrap:wrap}
+  .gate input{
+    flex:1 1 200px;font:inherit;font-size:16px;padding:12px 14px;
+    border:1.5px solid var(--mint-line);border-radius:14px;background:#f8fcf8;color:var(--ink);
+  }
+  .gate input:focus{outline:0;border-color:var(--green);background:#fff}
+  .gate .err{color:#b05a52;font-size:13px;font-weight:600;margin-top:10px;min-height:18px}
+
+  /* ---------- sections ---------- */
+  section{
+    background:var(--card);
+    border:1px solid var(--mint-line);
+    border-radius:20px;
+    padding:22px 22px 10px;
+    margin-top:20px;
+    box-shadow:var(--shadow);
+  }
+  .sec-head{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+  .sec-num{
+    flex:0 0 auto;width:34px;height:34px;border-radius:12px;
+    background:var(--mint-soft);color:var(--green-dark);
+    display:grid;place-items:center;font-weight:800;font-size:15px;
+  }
+  .sec-title{font-size:18px;font-weight:700;margin:0;color:#2d5437}
+  .sec-note{margin:2px 0 16px 46px;font-size:13.5px;color:var(--ink-soft)}
+
+  .bank{
+    background:var(--mint-soft);
+    border:1px dashed var(--mint-line);
+    border-radius:14px;padding:12px 14px;margin:0 0 18px;
+  }
+  .bank-title{font-size:12.5px;font-weight:700;color:var(--green-dark);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+  .bank ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+  .bank li{font-size:16px}
+  .bank .lt{font-weight:800;color:var(--green-dark);margin-right:6px}
+  .bank.inline ul{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
+
+  /* ---------- passage ---------- */
+  .passage{
+    background:#f6fbf6;border:1px solid var(--mint-line);border-left:4px solid var(--mint);
+    border-radius:14px;padding:16px 18px;margin:0 0 18px;
+  }
+  .passage .tag{
+    display:inline-block;font-size:12px;font-weight:700;color:var(--green-dark);
+    background:var(--mint-soft);border-radius:999px;padding:2px 10px;margin-bottom:8px;
+  }
+  .passage p{margin:0 0 10px;font-size:18px;line-height:2;letter-spacing:.3px}
+  .passage p:last-child{margin-bottom:0}
+
+  /* ---------- questions ---------- */
+  .q{padding:14px 0;border-top:1px solid #eef5ee}
+  .q:first-of-type{border-top:0}
+  .q-text{display:flex;gap:10px;align-items:baseline;font-size:17.5px;line-height:1.9}
+  .q-no{
+    flex:0 0 auto;min-width:26px;height:26px;padding:0 6px;border-radius:9px;
+    background:#f0f7f1;color:var(--green-dark);font-size:13px;font-weight:800;
+    display:inline-grid;place-items:center;transform:translateY(-2px)
+  }
+  .opts{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0 36px}
+  .opt{
+    appearance:none;cursor:pointer;font:inherit;font-size:16px;
+    background:#fff;border:1.5px solid var(--mint-line);color:var(--ink);
+    border-radius:12px;padding:7px 14px;transition:.15s;
+  }
+  .opt:hover{border-color:var(--green);background:#f4fbf5}
+  .opt .k{font-weight:800;color:var(--green-dark);margin-right:6px}
+  .opt.sel{background:var(--mint-soft);border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}
+  .opt.tf{min-width:56px;font-size:18px;font-weight:700}
+  .graded .opt{cursor:default}
+  .opt.good{background:var(--ok-bg);border-color:var(--ok);color:#2f6b3f}
+  .opt.bad{background:var(--no-bg);border-color:var(--no);color:#8d433c;text-decoration:line-through}
+  .fb{margin:10px 0 0 36px;font-size:14px;font-weight:600;display:none}
+  .graded .fb{display:block}
+  .fb.y{color:var(--ok)}
+  .fb.n{color:#b05a52}
+
+  /* ---------- bar ---------- */
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:5;
+    background:rgba(255,255,255,.92);backdrop-filter:blur(10px);
+    border-top:1px solid var(--mint-line);
+    padding:12px 18px;display:none;
+  }
+  .bar.on{display:block}
+  .bar-in{max-width:860px;margin:0 auto;display:flex;align-items:center;gap:14px}
+  .prog{flex:1;min-width:120px}
+  .prog-top{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-soft);margin-bottom:5px;font-weight:600}
+  .track{height:8px;background:#e7f1e8;border-radius:999px;overflow:hidden}
+  .fill{height:100%;width:0%;background:linear-gradient(90deg,#8fc79b,#5f9e6d);border-radius:999px;transition:width .3s}
+  .clock{
+    flex:0 0 auto;font-variant-numeric:tabular-nums;font-weight:800;font-size:15px;
+    color:var(--green-dark);background:var(--mint-soft);border-radius:12px;padding:8px 12px;
+  }
+  button.act{
+    appearance:none;cursor:pointer;font:inherit;font-weight:700;font-size:15px;
+    border:0;border-radius:14px;padding:11px 20px;color:#fff;
+    background:linear-gradient(135deg,#6aad78,#4e8e5c);box-shadow:0 3px 10px rgba(78,142,92,.3)
+  }
+  button.act:hover{filter:brightness(1.05)}
+  button.ghost{background:#fff;color:var(--green-dark);border:1.5px solid var(--mint-line);box-shadow:none}
+
+  /* ---------- result ---------- */
+  .result{display:none;margin-top:20px}
+  .result.on{display:block}
+  .score-card{
+    background:linear-gradient(135deg,#cfe8d4,#b7ddc0);
+    border:1px solid var(--mint-line);border-radius:20px;
+    padding:24px;text-align:center;box-shadow:var(--shadow)
+  }
+  .score-num{font-size:46px;font-weight:800;color:#2d5437;line-height:1.1}
+  .score-num small{font-size:20px;font-weight:700;color:#4e7a58}
+  .score-msg{margin-top:6px;color:#3f6b48;font-weight:600}
+  .score-grid{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .score-grid div{background:rgba(255,255,255,.7);border-radius:12px;padding:8px 14px;font-size:13px;font-weight:700;color:#3f6b48}
+  .sync{margin-top:12px;font-size:12.5px;font-weight:700;color:#41704d;min-height:18px}
+  footer{text-align:center;color:#6b8a73;font-size:12.5px;margin-top:26px}
+  @media(max-width:560px){
+    .wrap{padding:18px 12px 150px}
+    h1{font-size:23px}
+    .passage p,.q-text{font-size:16.5px}
+    .opts,.fb{margin-left:0}
+    .bar-in{gap:8px;flex-wrap:wrap}
+    .prog{order:1;flex:1 1 100%}
+    .clock{order:2}
+    button.act{order:3;flex:1;padding:10px 12px;font-size:14px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Kiểm tra cuối khóa HSK2</h1>
+    <p class="sub">阅读 · Đọc hiểu · 30 câu</p>
+    <p class="who" id="who"></p>
+  </header>
+
+  <!-- màn hình nhập tên -->
+  <div class="gate" id="gate">
+    <h2>Nhập tên của bạn để bắt đầu</h2>
+    <p>Thời gian làm bài sẽ được tính từ lúc bạn bấm "Bắt đầu làm bài".</p>
+    <div class="row">
+      <input id="nameInput" type="text" placeholder="Họ và tên" autocomplete="name" maxlength="60">
+      <button class="act" id="btnStart">Bắt đầu làm bài</button>
+    </div>
+    <div class="err" id="nameErr"></div>
+  </div>
+
+  <div id="app"></div>
+
+  <div class="result" id="result">
+    <div class="score-card">
+      <div class="score-num" id="scoreNum">0<small>/30</small></div>
+      <div class="score-msg" id="scoreMsg"></div>
+      <div class="score-grid" id="scoreGrid"></div>
+      <div class="sync" id="sync"></div>
+    </div>
+  </div>
+
+  <footer>Kiểm tra cuối khóa HSK2 · 共30题</footer>
+</div>
+
+<div class="bar" id="bar">
+  <div class="bar-in">
+    <div class="prog">
+      <div class="prog-top"><span id="pLabel">Đã làm 0/30</span><span id="pPct">0%</span></div>
+      <div class="track"><div class="fill" id="pFill"></div></div>
+    </div>
+    <div class="clock" id="clock">00:00</div>
+    <button class="act" id="btnCheck">Nộp bài</button>
+    <button class="act ghost" id="btnReset">Làm lại</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   DÁN LINK GOOGLE SHEET (Apps Script Web App) VÀO ĐÂY
+   Ví dụ: "https://script.google.com/macros/s/AKfycb..../exec"
+   Để trống "" thì trang vẫn chạy bình thường, chỉ không gửi dữ liệu.
+   ============================================================ */
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbw9HhdZheAXiBm-hu-MItoyFQv4TWRwkPTYo9AQ7YrSV_b4birs_lvNhtGgxbswEsyMDQ/exec";
+
+const DATA = [
+  {
+    n: "一", title: "选词填空", note: "Chọn từ thích hợp điền vào chỗ trống (câu 1–6).",
+    bank: { inline:true, title:"Từ cho sẵn", items:[["A","虽然"],["B","得"],["C","离"],["D","一会儿"],["E","过"],["F","比"]] },
+    letters: ["A","B","C","D","E","F"],
+    words: {A:"虽然",B:"得",C:"离",D:"一会儿",E:"过",F:"比"},
+    qs: [
+      {no:1, t:"我家（　）学校很近，走路十分钟就到了。", a:"C"},
+      {no:2, t:"他跑（　）非常快，我们都叫他去跑步。", a:"B"},
+      {no:3, t:"你在门口等（　），我去洗手间。", a:"D"},
+      {no:4, t:"我没去（　）颐和园，这是第一次。", a:"E"},
+      {no:5, t:"哥哥的个子（　）我高。", a:"F"},
+      {no:6, t:"（　）今天很累，但是我很快乐。", a:"A"}
+    ]
+  },
+  {
+    n: "二", title: "给问句选答句", note: "Chọn câu trả lời phù hợp cho mỗi câu hỏi (câu 7–12).",
+    bank: { title:"Câu trả lời", items:[
+      ["A","因为他的手表坏了。"],["B","我爱游泳，也喜欢打篮球。"],["C","打车去，坐公交车太慢了。"],
+      ["D","是个大晴天，我们出去走走吧。"],["E","试过了，有点儿长。"],["F","准备好了，是一个书包。"]] },
+    letters: ["A","B","C","D","E","F"],
+    qs: [
+      {no:7,  t:"你怎么去机场？", a:"C"},
+      {no:8,  t:"这条裤子你试过了吗？", a:"E"},
+      {no:9,  t:"他为什么哭了？", a:"A"},
+      {no:10, t:"奶奶的生日礼物准备好了吗？", a:"F"},
+      {no:11, t:"你的爱好是什么？", a:"B"},
+      {no:12, t:"外面天气怎么样？", a:"D"}
+    ]
+  },
+  {
+    n: "三", title: "判断对错", note: "Đọc đoạn văn, chọn ✓ (đúng) hoặc ✗ (sai) — câu 13–21.",
+    passages: [
+      { tag:"短文一",
+        text:[
+          "下午我跟哥哥去商场买裤子。我看见一条白色的裤子，很不错，就试了一下。但是白色的太长了。服务员说：“这条绿色的也很好看，您试试。”我觉得红色的最好看，所以买了红色的，花了九十八块。",
+          "从商场出来，我们没打车，因为车站就在旁边，坐公交车很快，也很便宜。"
+        ],
+        qs:[
+          {no:13, t:"他买了白色的裤子。", a:"N"},
+          {no:14, t:"服务员让他试绿色的。", a:"Y"},
+          {no:15, t:"车站离商场很近。", a:"Y"}
+        ]},
+      { tag:"短文二",
+        text:[
+          "下周就要考试了。昨天有一个词我不懂，就在教室门口等小明。他一进来，我就问他。他教了我两次，我还是不懂。他不累，教了我第三次，这次我懂了。",
+          "他说：“别哭，这样的题考试的时候经常有。你在本子上多写几次，就不会错了。”我说：“不好意思，让你帮忙。”他笑着说：“这就是朋友啊！”"
+        ],
+        qs:[
+          {no:16, t:"他昨天考试了。", a:"N"},
+          {no:17, t:"小明教了他三次。", a:"Y"},
+          {no:18, t:"小明让他在本子上多写几次。", a:"Y"}
+        ]},
+      { tag:"短文三",
+        text:[
+          "上个星期六，我跟同学一起去踢足球。踢了一会儿，我的头有点儿疼，身体也不舒服。同学说：“你别踢了，坐下来等我们吧。”",
+          "回来的路上，同学帮我去药店买了药。他告诉我：“你从小不运动，所以身体不太好。每天跑步一个小时，身体就会好。”",
+          "到家的时候，妈妈正在洗衣服。她说：“你头疼可能是因为你每天上网。”我笑了，没说话。"
+        ],
+        qs:[
+          {no:19, t:"他头疼了，但是还在踢足球。", a:"N"},
+          {no:20, t:"同学帮他买了药。", a:"Y"},
+          {no:21, t:"妈妈觉得他头疼是因为上网。", a:"Y"}
+        ]}
+    ]
+  },
+  {
+    n: "四", title: "阅读短文，选择答案", note: "Đọc đoạn văn rồi chọn đáp án đúng (câu 22–30).",
+    passages: [
+      { tag:"短文四",
+        text:[
+          "上个星期是爷爷的生日。奶奶准备了蛋糕，妈妈让我和妹妹去给爷爷买礼物。我们想坐公交车去商场，但是妈妈说那个商场太远了，还是打车吧。",
+          "在商场里，妹妹给爷爷买了一个手表，我买了画笔，因为爷爷从小的爱好就是画画儿。",
+          "回来的时候，我们进了一个饭馆，一人一杯咖啡。出来的时候我们走得很快，礼物忘在桌子下面了。回到家，妈妈问：“礼物呢？”我一听就哭了。妹妹说：“别哭，那个饭馆离我们家很近，我们走路过去。”",
+          "我们过去的时候，礼物还在桌子下面。晚上爷爷打开礼物，非常快乐，他说：“这个生日真有意思！”"
+        ],
+        qs:[
+          {no:22, t:"他们怎么去商场？", o:[["A","坐公交车"],["B","打车"],["C","走路"]], a:"B"},
+          {no:23, t:"爷爷的爱好是什么？", o:[["A","画画儿"],["B","游泳"],["C","踢足球"]], a:"A"},
+          {no:24, t:"他为什么哭了？", o:[["A","因为他很累"],["B","因为礼物忘在饭馆了"],["C","因为咖啡坏了"]], a:"B"},
+          {no:25, t:"爷爷说这个生日怎么样？", o:[["A","很有意思"],["B","没意思"],["C","不太好"]], a:"A"}
+        ]},
+      { tag:"短文五",
+        text:[
+          "今年过年，我跟爸爸妈妈去北京旅游。我们没坐火车，因为坐火车太慢。妈妈在网上买了三张飞机票，花了一万多块。",
+          "到北京的那天是一个大晴天。从机场往酒店，我们打车过去。酒店的房间很大，床很舒服，我一上床就睡觉了。",
+          "第二天上午，我们去了颐和园。门票二十块钱一张。颐和园里面人真多啊！水上面有很多鸟，好像一张画儿。妈妈说：“这么好的天，我们在这儿吃鱼吧。”",
+          "下午我们坐公交车回酒店。上车的时候我忘了买公交车票，爸爸给我买了一张。晚上爸爸说：“明年我们出国旅游，去外国看看，好不好？”我说：“好啊！我希望坐飞机去法国。”"
+        ],
+        qs:[
+          {no:26, t:"他们怎么去北京？", o:[["A","坐火车"],["B","坐飞机"],["C","开车"]], a:"B"},
+          {no:27, t:"飞机票是在哪儿买的？", o:[["A","机场"],["B","车站"],["C","网上"]], a:"C"},
+          {no:28, t:"他们去颐和园的那天，天气怎么样？", o:[["A","晴天"],["B","阴天"],["C","下雨"]], a:"A"},
+          {no:29, t:"妈妈想在颐和园吃什么？", o:[["A","鱼"],["B","肉"],["C","面条"]], a:"A"},
+          {no:30, t:"“我”希望明年做什么？", o:[["A","出国旅游"],["B","坐火车去北京"],["C","买手表"]], a:"A"}
+        ]}
+    ]
+  }
+];
+
+const TOTAL = 30;
+const answers = {};
+const KEY = {};
+const QTEXT = {};
+let graded = false;
+let userName = "";
+let startedAt = null;
+let timerId = null;
+
+function el(tag, cls, html){
+  const e = document.createElement(tag);
+  if(cls) e.className = cls;
+  if(html !== undefined) e.innerHTML = html;
+  return e;
+}
+function pad(n){ return (n<10?"0":"") + n; }
+function mmss(sec){ return pad(Math.floor(sec/60)) + ":" + pad(sec%60); }
+function show(v){ return v === "Y" ? "✓" : v === "N" ? "✗" : (v || "—"); }
+
+function makeQ(q, kind, letters, words){
+  KEY[q.no] = q.a;
+  QTEXT[q.no] = q.t;
+  const box = el("div","q");
+  box.dataset.no = q.no;
+  const line = el("div","q-text");
+  line.appendChild(el("span","q-no", q.no));
+  line.appendChild(el("span","", q.t));
+  box.appendChild(line);
+
+  const opts = el("div","opts");
+  let list;
+  if(kind === "tf")      list = [["Y","✓"],["N","✗"]];
+  else if(kind === "mc") list = q.o;
+  else                   list = letters.map(L => [L, words ? words[L] : ""]);
+
+  list.forEach(([val,label])=>{
+    const b = el("button","opt" + (kind==="tf" ? " tf":""));
+    b.dataset.val = val;
+    if(kind === "tf")      b.textContent = label;
+    else                   b.innerHTML = '<span class="k">'+val+'</span>'+(label||"");
+    b.onclick = () => {
+      if(graded) return;
+      answers[q.no] = val;
+      [...opts.children].forEach(c => c.classList.remove("sel"));
+      b.classList.add("sel");
+      updateProgress();
+    };
+    opts.appendChild(b);
+  });
+  box.appendChild(opts);
+  box.appendChild(el("div","fb"));
+  return box;
+}
+
+function render(){
+  const app = document.getElementById("app");
+  app.innerHTML = "";
+  DATA.forEach(sec=>{
+    const s = el("section");
+    const h = el("div","sec-head");
+    h.appendChild(el("div","sec-num", sec.n));
+    h.appendChild(el("h2","sec-title", "第" + sec.n + "部分　" + sec.title));
+    s.appendChild(h);
+    s.appendChild(el("p","sec-note", sec.note));
+
+    if(sec.bank){
+      const b = el("div","bank" + (sec.bank.inline ? " inline" : ""));
+      b.appendChild(el("div","bank-title", sec.bank.title));
+      const ul = el("ul");
+      sec.bank.items.forEach(([L,w])=>{
+        ul.appendChild(el("li","", '<span class="lt">'+L+'</span>'+w));
+      });
+      b.appendChild(ul);
+      s.appendChild(b);
+    }
+
+    if(sec.qs){
+      const kind = sec.bank && sec.bank.inline ? "fill" : "match";
+      sec.qs.forEach(q => s.appendChild(makeQ(q, kind, sec.letters, sec.words)));
+    }
+
+    if(sec.passages){
+      sec.passages.forEach(p=>{
+        const pb = el("div","passage");
+        pb.appendChild(el("span","tag", p.tag));
+        p.text.forEach(t => pb.appendChild(el("p","", t)));
+        s.appendChild(pb);
+        p.qs.forEach(q => s.appendChild(makeQ(q, q.o ? "mc" : "tf")));
+      });
+    }
+    app.appendChild(s);
+  });
+  updateProgress();
+}
+
+function updateProgress(){
+  const done = Object.keys(answers).length;
+  const pct = Math.round(done / TOTAL * 100);
+  document.getElementById("pLabel").textContent = "Đã làm " + done + "/" + TOTAL;
+  document.getElementById("pPct").textContent = pct + "%";
+  document.getElementById("pFill").style.width = pct + "%";
+}
+
+function tick(){
+  const sec = Math.floor((Date.now() - startedAt) / 1000);
+  document.getElementById("clock").textContent = mmss(sec);
+}
+
+function start(){
+  const inp = document.getElementById("nameInput");
+  const name = inp.value.trim();
+  if(name.length < 2){
+    document.getElementById("nameErr").textContent = "Bạn hãy nhập tên trước khi làm bài nhé.";
+    inp.focus();
+    return;
+  }
+  userName = name;
+  document.getElementById("nameErr").textContent = "";
+  document.getElementById("gate").style.display = "none";
+  const who = document.getElementById("who");
+  who.textContent = "Người làm: " + userName;
+  who.classList.add("on");
+  document.getElementById("bar").classList.add("on");
+  render();
+  startedAt = Date.now();
+  document.getElementById("clock").textContent = "00:00";
+  clearInterval(timerId);
+  timerId = setInterval(tick, 1000);
+}
+
+function check(){
+  if(graded) return;
+  const done = Object.keys(answers).length;
+  if(done < TOTAL && !confirm("Bạn còn " + (TOTAL - done) + " câu chưa làm. Vẫn nộp bài?")) return;
+
+  graded = true;
+  clearInterval(timerId);
+  const durationSec = Math.floor((Date.now() - startedAt) / 1000);
+
+  let right = 0;
+  const wrongNos = [];
+  const detail = [];
+
+  document.querySelectorAll(".q").forEach(box=>{
+    const no = +box.dataset.no;
+    const correct = KEY[no];
+    const mine = answers[no] || "";
+    box.classList.add("graded");
+    box.querySelectorAll(".opt").forEach(b=>{
+      const v = b.dataset.val;
+      if(v === correct) b.classList.add("good");
+      else if(v === mine) b.classList.add("bad");
+      b.classList.remove("sel");
+    });
+    const ok = mine === correct;
+    const fb = box.querySelector(".fb");
+    if(ok){
+      right++;
+      fb.className = "fb y";
+      fb.textContent = "✓ Đúng";
+    }else{
+      wrongNos.push(no);
+      fb.className = "fb n";
+      fb.textContent = mine ? ("✗ Sai — đáp án đúng: " + show(correct))
+                            : ("Chưa chọn — đáp án đúng: " + show(correct));
+    }
+    detail.push({ no:no, picked:show(mine), correct:show(correct), ok:ok });
+  });
+
+  const r = document.getElementById("result");
+  r.classList.add("on");
+  document.getElementById("scoreNum").innerHTML = right + "<small>/" + TOTAL + "</small>";
+  const pct = right / TOTAL * 100;
+  let msg;
+  if(pct === 100)     msg = "满分！真不错 — Tuyệt đối chính xác!";
+  else if(pct >= 80)  msg = "很好！Bạn đã nắm vững từ vựng HSK 2.";
+  else if(pct >= 60)  msg = "不错！Xem lại những câu sai một lần nữa nhé.";
+  else                msg = "再来一次 — Hãy đọc lại các đoạn văn rồi làm lại.";
+  document.getElementById("scoreMsg").textContent = msg;
+
+  const grid = document.getElementById("scoreGrid");
+  grid.innerHTML = "";
+  grid.appendChild(el("div","", "Đúng " + right));
+  grid.appendChild(el("div","", "Sai " + (TOTAL - right)));
+  grid.appendChild(el("div","", "Thời gian " + mmss(durationSec)));
+  grid.appendChild(el("div","", wrongNos.length ? ("Câu sai: " + wrongNos.join(", ")) : "Không có câu sai"));
+
+  sendToSheet({
+    name: userName,
+    startedAt: new Date(startedAt).toISOString(),
+    submittedAt: new Date().toISOString(),
+    durationSec: durationSec,
+    durationText: mmss(durationSec),
+    correct: right,
+    total: TOTAL,
+    scorePercent: Math.round(pct),
+    wrongNos: wrongNos,
+    detail: detail
+  });
+
+  r.scrollIntoView({behavior:"smooth", block:"center"});
+}
+
+function sendToSheet(payload){
+  const s = document.getElementById("sync");
+  if(!SHEET_URL){
+    s.textContent = "";
+    return;
+  }
+  s.textContent = "Đang gửi kết quả…";
+  const body = JSON.stringify(payload);
+  fetch(SHEET_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: body
+  }).then(res => res.text())
+    .then(() => { s.textContent = "✓ Đã lưu kết quả vào Google Sheet"; })
+    .catch(() => {
+      // CORS chặn đọc phản hồi → gửi lại kiểu "fire and forget"
+      fetch(SHEET_URL, { method:"POST", mode:"no-cors",
+        headers:{ "Content-Type":"text/plain;charset=utf-8" }, body: body })
+        .then(() => { s.textContent = "✓ Đã gửi kết quả"; })
+        .catch(() => { s.textContent = "⚠ Không gửi được kết quả (kiểm tra lại link Apps Script)"; });
+    });
+}
+
+function reset(){
+  graded = false;
+  for(const k in answers) delete answers[k];
+  document.getElementById("result").classList.remove("on");
+  document.getElementById("sync").textContent = "";
+  render();
+  startedAt = Date.now();
+  document.getElementById("clock").textContent = "00:00";
+  clearInterval(timerId);
+  timerId = setInterval(tick, 1000);
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+document.getElementById("btnStart").onclick = start;
+document.getElementById("nameInput").addEventListener("keydown", e => { if(e.key === "Enter") start(); });
+document.getElementById("btnCheck").onclick = check;
+document.getElementById("btnReset").onclick = reset;
+</script>
+</body>
+</html>
