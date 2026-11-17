@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HSK 2 — Đề thi mô phỏng</title>
+<style>
+:root{
+  --ink:#1b1b1f; --ink2:#4a4a55; --mut:#8a8a96;
+  --paper:#eef5e7; --card:#fff; --line:#dbe5d1;
+  --accent:#e2621b; --accent-s:#fdf0e7;
+  --ok:#1f8a4c; --okbg:#eaf6ee; --bad:#c62a2a; --badbg:#fceceb;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:92px}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font:16px/1.65 "Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.hidden{display:none !important}
+button{font:inherit; cursor:pointer}
+.zh{font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif}
+
+/* ---------- GATE ---------- */
+.gate{min-height:100dvh; display:grid; place-items:center; padding:24px 16px;
+  background:radial-gradient(1100px 520px at 50% -10%,#e0eed4 0%,var(--paper) 62%)}
+.gate-card{width:100%; max-width:470px; background:var(--card); border:1px solid var(--line);
+  border-radius:20px; padding:34px 30px 28px; box-shadow:0 18px 50px -24px rgba(40,70,35,.32)}
+.gate-badge{display:inline-block; font-size:11.5px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent); background:var(--accent-s); border-radius:99px; padding:5px 12px; font-weight:700}
+.gate-title{font-size:33px; margin:18px 0 4px; letter-spacing:.01em; font-weight:800; line-height:1.2}
+.gate-title span{color:var(--accent)}
+.gate-sub{margin:0 0 22px; color:var(--ink2); font-size:14.5px}
+.gate-meta{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:26px}
+.gate-meta div{background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:12px 6px; text-align:center}
+.gate-meta b{display:block; font-size:22px; line-height:1.1}
+.gate-meta span{font-size:11.5px; color:var(--mut)}
+.gate-label{display:block; font-size:13px; font-weight:700; margin-bottom:7px; color:var(--ink2)}
+.gate-input{width:100%; padding:14px 16px; font-size:16px; border:1.5px solid var(--line);
+  border-radius:12px; background:#fff; outline:none; transition:.15s}
+.gate-input:focus{border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-s)}
+.gate-err{min-height:20px; font-size:13px; color:var(--bad); margin:6px 2px 0}
+.btn-start{width:100%; padding:15px; margin-top:6px; border:0; border-radius:12px;
+  background:var(--accent); color:#fff; font-weight:700; font-size:16px; transition:.15s}
+.btn-start:hover{background:#cf5614}
+.btn-ghost{padding:14px 20px; border:1.5px solid var(--line); background:#fff; border-radius:12px; font-weight:600}
+.gate-note{margin:22px 0 0; padding:16px 16px 16px 32px; background:var(--paper);
+  border:1px solid var(--line); border-radius:12px; font-size:13px; color:var(--ink2)}
+.gate-note li{margin:4px 0}
+
+/* ---------- BAR ---------- */
+.bar{position:sticky; top:0; z-index:40; background:rgba(255,255,255,.93);
+  backdrop-filter:blur(10px); border-bottom:1px solid var(--line)}
+.bar-in{max-width:860px; margin:0 auto; padding:11px 16px; display:flex; align-items:center; gap:14px}
+.bar-who{display:flex; align-items:center; gap:7px; font-weight:700; font-size:14px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:30%}
+.dot{width:7px; height:7px; border-radius:50%; background:var(--ok); flex:none}
+.bar-nav{display:flex; gap:4px; margin-left:auto}
+.bar-nav a{font-size:14px; text-decoration:none; color:var(--ink2); padding:5px 11px;
+  border-radius:8px; font-weight:600}
+.bar-nav a:hover{background:var(--accent-s); color:var(--accent)}
+.bar-right{display:flex; align-items:center; gap:10px}
+.prog{font-size:13px; color:var(--mut); font-variant-numeric:tabular-nums; white-space:nowrap}
+.clock{font-variant-numeric:tabular-nums; font-weight:800; font-size:17px;
+  background:var(--paper); border:1px solid var(--line); border-radius:9px; padding:5px 11px}
+.clock.warn{color:#b35309; background:#fff6e8; border-color:#f3d9b0}
+.clock.danger{color:#fff; background:var(--bad); border-color:var(--bad); animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.62}}
+.bar-line{height:3px; background:var(--line)}
+.bar-line i{display:block; height:100%; width:0; background:var(--accent); transition:width .3s}
+
+/* ---------- EXAM ---------- */
+.exam{max-width:860px; margin:0 auto; padding:26px 16px 10px}
+.sec-head{margin:46px 0 22px; text-align:center}
+.sec-head:first-child{margin-top:8px}
+.sec-head h2{font-size:27px; margin:0; letter-spacing:.22em}
+.sec-head p{margin:5px 0 0; color:var(--mut); font-size:13px; letter-spacing:.04em}
+.part{margin:34px 0 16px; display:flex; align-items:center; gap:12px}
+.part::after{content:""; flex:1; height:1px; background:var(--line)}
+.part h3{margin:0; font-size:17px; letter-spacing:.14em}
+.part em{font-style:normal; font-size:12.5px; color:var(--mut); letter-spacing:0}
+
+.audio-box{background:var(--card); border:1px solid var(--line); border-radius:var(--r);
+  padding:16px 18px; margin-bottom:8px; box-shadow:0 2px 10px -6px rgba(0,0,0,.18)}
+.audio-box h4{margin:0 0 4px; font-size:14px}
+.audio-box p{margin:0 0 11px; font-size:12.5px; color:var(--mut)}
+.audio-box audio{width:100%; height:40px}
+
+.bank{background:var(--card); border:1px solid var(--line); border-radius:var(--r);
+  padding:16px; margin-bottom:18px}
+.bank-ttl{font-size:12px; color:var(--mut); letter-spacing:.08em; text-transform:uppercase;
+  margin:0 0 12px; font-weight:700}
+.bank-imgs{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+.bank-imgs figure{margin:0; text-align:center}
+.bank-imgs .ph{position:relative; display:block; height:110px; background:var(--paper);
+  border:1px solid var(--line); border-radius:10px; overflow:hidden; padding:6px}
+.bank-imgs img{position:absolute; inset:6px; width:calc(100% - 12px); height:calc(100% - 12px); object-fit:contain; mix-blend-mode:multiply}
+.bank-imgs figcaption{font-weight:800; font-size:13px; margin-top:5px; color:var(--ink2)}
+.bank-list{display:grid; gap:9px}
+.bank-row{display:flex; gap:10px; align-items:flex-start; font-size:15px}
+.bank-row b{color:var(--accent); flex:none; width:16px}
+.bank-row .py{display:block; font-size:11.5px; color:var(--mut); letter-spacing:.02em}
+.bank-words{display:flex; flex-wrap:wrap; gap:8px}
+.bank-words span{background:var(--paper); border:1px solid var(--line); border-radius:9px;
+  padding:6px 12px; font-size:15px}
+.bank-words span b{color:var(--accent); margin-right:6px}
+.bank-words span i{font-style:normal; font-size:11px; color:var(--mut); display:block; line-height:1.2}
+
+.q{background:var(--card); border:1px solid var(--line); border-radius:var(--r);
+  padding:16px 18px; margin-bottom:12px; transition:border-color .15s}
+.q.answered{border-color:#c6d8ba}
+.q-top{display:flex; gap:11px; align-items:baseline; margin-bottom:12px}
+.q-num{flex:none; width:30px; height:30px; border-radius:9px; background:var(--paper);
+  border:1px solid var(--line); display:grid; place-items:center; font-weight:800; font-size:13px}
+.q.answered .q-num{background:var(--accent); border-color:var(--accent); color:#fff}
+.q-text{flex:1}
+.q-text .py{display:block; font-size:11.5px; color:var(--mut); line-height:1.5; letter-spacing:.02em}
+.q-text .cn{display:block; font-size:16.5px; line-height:1.85}
+.q-body{font-size:16px; line-height:1.95; margin-bottom:6px}
+.q-ask{font-weight:700; margin-top:10px}
+.q-text .q-ask .py{font-weight:400}
+
+.opts{display:grid; gap:8px}
+.opts.img3{grid-template-columns:repeat(3,1fr)}
+.opts.letters{grid-template-columns:repeat(auto-fit,minmax(54px,1fr)); max-width:540px}
+.opt{display:flex; align-items:center; gap:10px; padding:11px 13px; border:1.5px solid var(--line);
+  border-radius:11px; background:#fff; text-align:left; transition:.12s; width:100%}
+.opt:hover{border-color:#bdd3ae; background:#fbfdf9}
+.opt .k{flex:none; width:24px; height:24px; border-radius:7px; background:var(--paper);
+  border:1px solid var(--line); display:grid; place-items:center; font-weight:800; font-size:12px}
+.opt .t{font-size:15.5px}
+.opt .t .py{display:block; font-size:11px; color:var(--mut); line-height:1.3}
+.opt.sel{border-color:var(--accent); background:var(--accent-s)}
+.opt.sel .k{background:var(--accent); border-color:var(--accent); color:#fff}
+.opt.img{flex-direction:column; gap:7px; padding:9px}
+.opt.img .ph{position:relative; display:block; width:100%; height:96px; overflow:hidden}
+.opt.img img{position:absolute; inset:0; width:100%; height:100%; object-fit:contain; mix-blend-mode:multiply}
+.opts.letters .opt{justify-content:center; padding:13px 0}
+.opts.letters .t{display:none}
+.opts.letters .k{width:26px; height:26px; font-size:13px}
+
+.q-img{display:grid; place-items:center; padding:6px 0 14px}
+.q-img img{max-height:92px; mix-blend-mode:multiply}
+
+.fill{display:flex; align-items:center; flex-wrap:wrap; gap:4px; font-size:16.5px; line-height:2.1}
+.fill input{width:62px; height:46px; text-align:center; font-size:21px; font-weight:600;
+  border:1.5px solid var(--line); border-radius:10px; background:var(--paper); outline:none;
+  font-family:"Noto Sans SC","PingFang SC",sans-serif}
+.fill input:focus{border-color:var(--accent); background:#fff; box-shadow:0 0 0 4px var(--accent-s)}
+
+.divider{margin:40px 0; padding:22px; text-align:center; border-top:2px dashed var(--line);
+  border-bottom:2px dashed var(--line); color:var(--ink2)}
+.divider b{display:block; font-size:19px; letter-spacing:.08em; margin-bottom:4px}
+.divider span{font-size:13px; color:var(--mut)}
+
+/* ---------- SUBMIT ---------- */
+.submit-wrap{max-width:860px; margin:0 auto; padding:18px 16px 60px; text-align:center}
+.btn-submit{padding:16px 54px; border:0; border-radius:13px; background:var(--ink); color:#fff;
+  font-weight:700; font-size:16.5px}
+.btn-submit:hover{background:#000}
+.submit-hint{font-size:13px; color:var(--mut); margin:11px 0 0}
+
+/* ---------- MODAL ---------- */
+.modal{position:fixed; inset:0; z-index:60; background:rgba(22,35,20,.45);
+  display:grid; place-items:center; padding:20px}
+.modal-box{background:#fff; border-radius:18px; padding:26px; max-width:390px; width:100%}
+.modal-box h3{margin:0 0 8px; font-size:20px}
+.modal-box p{margin:0 0 20px; color:var(--ink2); font-size:14.5px}
+.modal-btns{display:flex; gap:10px}
+.modal-btns>*{flex:1}
+
+/* ---------- RESULT ---------- */
+.result{max-width:860px; margin:0 auto; padding:30px 16px 70px}
+.score{background:var(--card); border:1px solid var(--line); border-radius:20px;
+  padding:32px 26px; text-align:center; margin-bottom:12px}
+.score .who{font-size:13.5px; color:var(--mut)}
+.score .who b{color:var(--ink)}
+.score .big{font-size:62px; font-weight:800; line-height:1.05; margin:10px 0 2px}
+.score .of{font-size:15px; color:var(--mut); margin-bottom:18px}
+.score .verdict{display:inline-block; padding:7px 18px; border-radius:99px; font-weight:700; font-size:14px}
+.score .verdict.pass{background:var(--okbg); color:var(--ok)}
+.score .verdict.fail{background:var(--badbg); color:var(--bad)}
+.score .why{font-size:13px; color:var(--mut); margin:14px 0 0}
+.breakdown{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:26px}
+.breakdown div{background:var(--card); border:1px solid var(--line); border-radius:14px;
+  padding:16px 10px; text-align:center}
+.breakdown b{display:block; font-size:23px}
+.breakdown span{font-size:12px; color:var(--mut)}
+.rev-head{display:flex; align-items:center; justify-content:space-between; margin:0 0 14px}
+.rev-head h3{margin:0; font-size:18px}
+.rev-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(62px,1fr)); gap:7px; margin-bottom:26px}
+.cell{border-radius:10px; padding:9px 4px; text-align:center; border:1px solid transparent; font-size:12.5px}
+.cell b{display:block; font-size:11px; opacity:.7; font-weight:600}
+.cell.ok{background:#e3f3e8; color:var(--ok); border-color:#cde8d6}
+.cell.bad{background:var(--badbg); color:var(--bad); border-color:#f3cfcd}
+.cell .mine{text-decoration:line-through; opacity:.65; margin-right:4px}
+.rev-note{font-size:13px; color:var(--mut); background:var(--card); border:1px solid var(--line);
+  border-radius:12px; padding:14px 16px}
+.again{display:block; width:100%; max-width:260px; margin:26px auto 0; padding:14px;
+  border:1.5px solid var(--line); background:#fff; border-radius:12px; font-weight:700}
+
+.timeup{background:#fff6e8; border:1px solid #f3d9b0; color:#8a4b09; border-radius:12px;
+  padding:13px 16px; font-size:14px; margin-bottom:16px; text-align:center; font-weight:600}
+
+@media (max-width:620px){
+  .gate-card{padding:26px 20px}
+  .gate-title{font-size:27px}
+  .bar-nav{display:none}
+  .bar-who{max-width:46%}
+  .exam{padding:18px 12px 6px}
+  .q{padding:14px}
+  .bank-imgs{grid-template-columns:repeat(2,1fr)}
+  .opts.img3{grid-template-columns:repeat(3,1fr); gap:6px}
+  .opt.img .ph{height:72px}
+  .opt{padding:10px}
+  .sec-head h2{font-size:23px}
+  .score .big{font-size:50px}
+}
+
+/* ẩn phiên âm */
+.py{display:none !important}
+
+</style>
+</head>
+<body>
+
+<!-- ============ TRANG 1: NHẬP TÊN ============ -->
+<section id="gate" class="gate">
+  <div class="gate-card">
+    <div class="gate-badge">新 HSK 教程 2 · 学练手册</div>
+    <h1 class="gate-title">HSK（二级）<span>模拟试卷</span></h1>
+    <p class="gate-sub">Bài thi mô phỏng HSK 2 — Sổ tay học và luyện tập</p>
+
+    <div class="gate-meta">
+      <div><b>60</b><span>câu hỏi</span></div>
+      <div><b>60</b><span>phút</span></div>
+      <div><b>3</b><span>phần thi</span></div>
+    </div>
+
+    <label class="gate-label" for="nameInput">Họ và tên thí sinh</label>
+    <input id="nameInput" class="gate-input" type="text" placeholder="Nhập tên của bạn…" autocomplete="off" maxlength="40">
+    <div id="nameErr" class="gate-err"></div>
+
+    <button id="startBtn" class="btn-start">Bắt đầu làm bài</button>
+  </div>
+</section>
+
+<!-- ============ THANH TRÊN ============ -->
+<header id="bar" class="bar hidden">
+  <div class="bar-in">
+    <div class="bar-who"><span class="dot"></span><span id="barName"></span></div>
+    <nav class="bar-nav">
+      <a href="#sec-listen">听力</a>
+      <a href="#sec-read">阅读</a>
+      <a href="#sec-write">书写</a>
+    </nav>
+    <div class="bar-right">
+      <div id="prog" class="prog">0/60</div>
+      <div id="clock" class="clock">60:00</div>
+    </div>
+  </div>
+  <div class="bar-line"><i id="barFill"></i></div>
+</header>
+
+<!-- ============ ĐỀ THI ============ -->
+<main id="exam" class="exam hidden"></main>
+
+<div id="submitWrap" class="submit-wrap hidden">
+  <button id="submitBtn" class="btn-submit">Nộp bài</button>
+  <p class="submit-hint">Bạn còn <span id="leftCount">60</span> câu chưa trả lời.</p>
+</div>
+
+<!-- ============ KẾT QUẢ ============ -->
+<section id="result" class="result hidden"></section>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-box">
+    <h3 id="modalTitle">Nộp bài?</h3>
+    <p id="modalText"></p>
+    <div class="modal-btns">
+      <button id="modalNo" class="btn-ghost">Quay lại</button>
+      <button id="modalYes" class="btn-start">Nộp bài</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// HSK 2 — Đề thi mô phỏng cuối sách (Sổ tay học và luyện tập New HSK 2)
+const KEY = {
+ 1:'A',2:'C',3:'B',4:'B',5:'A',
+ 6:'A',7:'F',8:'E',9:'C',10:'B',11:'E',12:'D',13:'B',14:'C',15:'A',
+ 16:'A',17:'C',18:'A',19:'B',20:'A',21:'B',22:'C',23:'A',24:'A',25:'B',
+ 26:'C',27:'E',28:'F',29:'A',30:'B',
+ 31:'B',32:'D',33:'F',34:'A',35:'C',
+ 36:'B',37:'D',38:'C',39:'F',40:'A',41:'D',42:'A',43:'C',44:'E',45:'B',
+ 46:'C',47:'B',48:'A',49:'B',50:'A',
+ 51:'D',52:'B',53:'C',54:'F',55:'A',
+ 56:'学',57:'名',58:'后',59:'可',60:'为'
+};
+
+const L1 = [
+ {n:1, opts:{A:'L1_1A',B:'L1_1B',C:'L1_1C'}},
+ {n:2, opts:{A:'L1_2A',B:'L1_2B',C:'L1_2C'}},
+ {n:3, opts:{A:'L1_3A',B:'L1_3B',C:'L1_3C'}},
+ {n:4, opts:{A:'L1_4A',B:'L1_4B',C:'L1_4C'}},
+ {n:5, opts:{A:'L1_5A',B:'L1_5B',C:'L1_5C'}}
+];
+
+const L2BANK = ['A','B','C','D','E','F'].map(k=>({k,img:'L2_'+k}));
+const L3BANK = ['A','B','C','D','E'].map(k=>({k,img:'L3_'+k}));
+const R1BANK = ['A','B','C','D','E','F'].map(k=>({k,img:'R1_'+k}));
+
+// Phần 3 nghe: 16–25
+const L3Q = [
+ {n:16, o:[['jiā li','家里'],['fànguǎn','饭馆'],['diànyǐngyuàn','电影院']]},
+ {n:17, o:[['shàngkè','上课'],['yóuyǒng','游泳'],['tī qiú','踢球']]},
+ {n:18, o:[['yàodiàn','药店'],['xuéxiào','学校'],['kāfēidiàn','咖啡店']]},
+ {n:19, o:[['zǒulù','走路'],['zuò cài','做菜'],['chī fàn','吃饭']]},
+ {n:20, o:[['dōngxi guì','东西贵'],['bú tài jìn','不太近'],['dōngxi bù hǎo','东西不好']]},
+ {n:21, o:[['dǎchē','打车'],['zuò dìtiě','坐地铁'],['zuò gōngjiāochē','坐公交车']]},
+ {n:22, o:[['xiūxi','休息'],['qù pǎobù','去跑步'],['xǐ yīfu','洗衣服']]},
+ {n:23, o:[['jīntiān','今天'],['Xīngqīliù','星期六'],['Xīngqītiān','星期天']]},
+ {n:24, o:[['huǒchēzhàn','火车站'],['huǒchē shang','火车上'],['chūzūchē shang','出租车上']]},
+ {n:25, o:[['shāngdiàn','商店'],['chāoshì','超市'],['shuǐguǒdiàn','水果店']]}
+];
+
+// Đọc phần 1: 26–30
+const R1Q = [
+ {n:26, p:'Zhè jiā fànguǎn de yú zuò de zhēn búcuò!', c:'这家饭馆的鱼做得真不错！'},
+ {n:27, p:'Zhè jiān jiàoshì li méiyǒu rén, wǒmen jìnqù xuéxí ba.', c:'这间教室里没有人，我们进去学习吧。'},
+ {n:28, p:'Wǒ zuò dìtiě guòqù, zhèyàng néng kuài yìxiē.', c:'我坐地铁过去，这样能快一些。'},
+ {n:29, p:'Zhè shì wǒ xīn mǎi de shǒubiǎo, nǐ juéde zěnmeyàng?', c:'这是我新买的手表，你觉得怎么样？'},
+ {n:30, p:'Wǒ shēntǐ bù shūfu, jīntiān méi qù xuéxiào.', c:'我身体不舒服，今天没去学校。'}
+];
+
+// Đọc phần 2: 31–35
+const R2BANK = [['A','cháng','长'],['B','ná','拿'],['C','zhàngfu','丈夫'],['D','gāozhōng','高中'],['E','wán','完'],['F','gàosu','告诉']];
+const R2Q = [
+ {n:31, lines:[['Nǐ shǒu li ( ) de shì shénme?','你 手 里（　）的 是 什么？']]},
+ {n:32, lines:[['Wǒ dìdi jīnnián 16 suì, zhèngzài shàng ( ).','我 弟弟 今年 16 岁，正在 上（　）。']]},
+ {n:33, lines:[['Qǐng ( ) wǒ zhège zì shì shénme yìsi.','请（　）我 这个 字 是 什么 意思。']]},
+ {n:34, lines:[['Zhèxiē tí nǐ zuòle duō ( ) shíjiān?','女：这些 题 你 做了 多（　）时间？'],['Wǒ zuòle bàn gè duō xiǎoshí.','男：我 做了 半 个 多 小时。']]},
+ {n:35, lines:[['Zuótiān lái zhǎo nǐ de nàge rén shì nǐ ( ) ma?','男：昨天 来 找 你 的 那个 人 是 你（　）吗？'],['Bú shì, nà shì wǒ dìdi.','女：不是，那 是 我 弟弟。']]}
+];
+
+// Đọc phần 3: 36–40
+const R3BANK = [
+ ['A','Huílái, wǒ jiù huíqù guò gè nián.','回来，我就回去过个年。'],
+ ['B','Nín chū mén wǎng zuǒ zǒu, hěn kuài jiù néng kàndào.','您出门往左走，很快就能看到。'],
+ ['C','Wǒ yě zuòcuò le, wǒmen yìqǐ qù wèn lǎoshī ba.','我也做错了，我们一起去问老师吧。'],
+ ['D','Zhè jǐ tiān méiyǒu hǎokàn de diànyǐng, háishi bié qù le ba.','这几天没有好看的电影，还是别去了吧。'],
+ ['E','Tā chūqù le, yíhuìr jiù huílái.','他出去了，一会儿就回来。'],
+ ['F','Zuótiān shì wǒ de shēngrì, zhè shì péngyou sòng gěi wǒ de.','昨天是我的生日，这是朋友送给我的。']
+];
+const R3Q = [
+ {n:36, p:'Qǐngwèn, xǐshǒujiān zài nǎr?', c:'请问，洗手间 在 哪儿？'},
+ {n:37, p:'Wǒmen wǎnshang qù kàn diànyǐng ba.', c:'我们 晚上 去 看 电影 吧。'},
+ {n:38, p:'Nǐ bāng wǒ kànkan zhège tí zěnme zuò.', c:'你 帮 我 看看 这个 题 怎么 做。'},
+ {n:39, p:'Zhè shì nǐ xīn mǎi de bāo? Zhēn piàoliang.', c:'这 是 你 新 买 的 包？真 漂亮。'},
+ {n:40, p:'Xiǎo Lǐ shuō nǐ yào huí guó le, hái huílái ma?', c:'小李 说 你 要 回国 了，还 回来 吗？'}
+];
+
+// Đọc phần 3b: 41–45
+const R4BANK = [
+ ['A','Hái yǒu yí gè duō xīngqī.','还有一个多星期。'],
+ ['B','Nǚháir bǐ nánháir duō yìxiē.','女孩儿比男孩儿多一些。'],
+ ['C','Yīnwèi zhè shì wǒ zuì xǐhuan de yánsè.','因为这是我最喜欢的颜色。'],
+ ['D','Yéye qù mǎi cài le, nǎinai zài zhǔnbèi wǎnfàn.','爷爷去买菜了，奶奶在准备晚饭。'],
+ ['E','Hái búcuò, dàn wǒ jìde jiā li yǒu yí jiàn zhèyàng de yīfu.','还不错，但我记得家里有一件这样的衣服。']
+];
+const R4Q = [
+ {n:41, p:'Nǐ yéye, nǎinai ne?', c:'你 爷爷、奶奶 呢？'},
+ {n:42, p:'Nǐmen shénme shíhou kāixué?', c:'你们 什么 时候 开学？'},
+ {n:43, p:'Nǐ zěnme mǎile gè lǜsè de?', c:'你 怎么 买了 个 绿色 的？'},
+ {n:44, p:'Nǐ juéde zhè jiàn yīfu zěnmeyàng?', c:'你 觉得 这 件 衣服 怎么样？'},
+ {n:45, p:'Nǐmen bān nánháir duō háishi nǚháir duō?', c:'你们 班 男孩儿 多 还是 女孩儿 多？'}
+];
+
+// Đọc phần 4: 46–50
+const R5Q = [
+ {n:46,
+  body:[['Suīrán zuǒbian de huā bǐ yòubian de guì yìxiē, dànshì yánsè hěn hǎokàn, háishi mǎi zuǒbian de ba.','虽然 左边 的 花 比 右边 的 贵 一些，但是 颜色 很 好看，还是 买 左边 的 吧。']],
+  q:['Wèi shénme mǎi zuǒbian de huā?','为 什么 买 左边 的 花？'],
+  o:[['hěn piányi','很 便宜'],['yánsè duō','颜色 多'],['hěn hǎokàn','很 好看']]},
+ {n:47,
+  body:[['Wǒ cóngxiǎo jiù xǐhuan tī zúqiú, tī qiú shí wǒ bù juéde lèi, měi cì tīwán qiú dōu hěn gāoxìng.','我 从小 就 喜欢 踢 足球，踢 球 时 我 不 觉得 累，每 次 踢完 球 都 很 高兴。']],
+  q:['Tī qiú ràng tā juéde:','踢 球 让 他 觉得：'],
+  o:[['hěn lèi','很 累'],['hěn kuàilè','很 快乐'],['méi yìsi','没 意思']]},
+ {n:48,
+  body:[['Xiǎo Lǐ de zhuōzi xiàmiàn fàngzhe tā de shūbāo, zhuōzi shang fàngzhe yì bēi nǎichá, nà shì tā zuì xǐhuan hē de.','小李 的 桌子 下面 放着 她 的 书包，桌子 上 放着 一 杯 奶茶，那 是 她 最 喜欢 喝 的。']],
+  q:['Nǎichá zài nǎr?','奶茶 在 哪儿？'],
+  o:[['zhuōzi shang','桌子 上'],['zhuōzi xià','桌子 下'],['shūbāo li','书包 里']]},
+ {n:49,
+  body:[['Wǒ zhè jǐ zhōu gōngzuò hěn máng, jīngcháng tóu téng, yǎnjing yě bù shūfu, jiù qù yīyuàn kànle kàn. Yīshēng shuō wèntí bú dà, ràng wǒ duō xiūxi.','我 这 几 周 工作 很 忙，经常 头 疼，眼睛 也 不 舒服，就 去 医院 看了 看。医生 说 问题 不 大，让 我 多 休息。']],
+  q:['Yīshēng ràng tā zuò shénme?','医生 让 他 做 什么？'],
+  o:[['gōngzuò','工作'],['xiūxi','休息'],['qù yīyuàn','去 医院']]},
+ {n:50,
+  body:[['Jiù yào guònián le, wǒ hé zhàngfu qù chāoshì mǎile yìxiē ròu, cài hé shuǐguǒ huílái. Dànshì, jīntiān qù de shíhou yú màiwán le, suǒyǐ wǒmen míngtiān hái yào zài qù yí cì.','就 要 过年 了，我 和 丈夫 去 超市 买了 一些 肉、菜 和 水果 回来。但是，今天 去 的 时候 鱼 卖完 了，所以 我们 明天 还 要 再 去 一 次。']],
+  q:['Tāmen míngtiān qù mǎi shénme?','他们 明天 去 买 什么？'],
+  o:[['yú','鱼'],['cài','菜'],['shuǐguǒ','水果']]}
+];
+
+// Viết phần 1: 51–55
+const W1BANK = [['A','灬'],['B','纟'],['C','亻'],['D','巾'],['E','十'],['F','忄']];
+const W1Q = [
+ {n:51, img:'W_51'},{n:52, img:'W_52'},{n:53, img:'W_53'},{n:54, img:'W_54'},{n:55, img:'W_55'}
+];
+
+// Viết phần 2: 56–60
+const W2Q = [
+ {n:56, p:'Wǒ dào ( ) xiào ménkǒu le, nǐ ne?', c:['我 到（','）校 门口 了，你 呢？']},
+ {n:57, p:'Zhè cì kǎoshì tā kǎole dì-yī ( ).', c:['这 次 考试 他 考了 第一（','）。']},
+ {n:58, p:'Diànyǐngyuàn ( ) miàn kāile yì jiā dà chāoshì.', c:['电影院（','）面 开了 一 家 大 超市。']},
+ {n:59, p:'Wǒ shì xīn lái de, suǒyǐ nín ( ) néng méi jiànguo wǒ.', c:['我 是 新 来 的，所以 您（','）能 没 见过 我。']},
+ {n:60, p:'Dōu shí diǎn le, nǐ ( ) shénme hái bú qù jīchǎng?', c:['都 十 点 了，你（','）什么 还 不 去 机场？']}
+];
+
+</script>
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const el = (t, c, h) => { const e = document.createElement(t); if (c) e.className = c; if (h != null) e.innerHTML = h; return e; };
+const DUR = 60 * 60;           // 60 phút
+
+/* ====== DÁN LINK GOOGLE APPS SCRIPT VÀO ĐÂY ====== */
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxaiXknmbsvQH9qcrrvriA1rQapb9kghUlqnCNP2hEXsUAtpwi1rnOwvNi2YYK_DPJ39w/exec';
+/* ================================================= */
+const answers = {};            // {n: 'A' | '学'}
+let timer = null, left = DUR, done = false, student = '', startedAt = null;
+
+/* ================= DỰNG ĐỀ ================= */
+function optBtn(n, k, inner, isImg) {
+  const b = el('button', 'opt' + (isImg ? ' img' : ''));
+  b.type = 'button';
+  b.innerHTML = (isImg ? inner : `<span class="k">${k}</span><span class="t">${inner}</span>`);
+  if (isImg) b.innerHTML = inner + `<span class="k">${k}</span>`;
+  b.onclick = () => pick(n, k, b);
+  return b;
+}
+function qShell(n, headHTML) {
+  const q = el('div', 'q'); q.id = 'q' + n;
+  const top = el('div', 'q-top');
+  top.append(el('div', 'q-num', String(n)), el('div', 'q-text', headHTML || ''));
+  q.append(top);
+  return q;
+}
+function pick(n, k, btn) {
+  if (done) return;
+  answers[n] = k;
+  const box = btn.closest('.q');
+  box.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+  btn.classList.add('sel');
+  box.classList.add('answered');
+  refresh();
+}
+function imgOpts(n, keys, path) {
+  const wrap = el('div', 'opts img3');
+  keys.forEach(k => wrap.append(optBtn(n, k, `<span class="ph"><img src="assets/${path(k)}.jpg" alt=""></span>`, true)));
+  return wrap;
+}
+function letterOpts(n, keys) {
+  const wrap = el('div', 'opts letters');
+  keys.forEach(k => wrap.append(optBtn(n, k, '', false)));
+  return wrap;
+}
+function textOpts(n, arr) {   // arr = [[pinyin, hanzi], ...]
+  const wrap = el('div', 'opts');
+  arr.forEach(([py, cn], i) => {
+    const k = 'ABC'[i];
+    wrap.append(optBtn(n, k, `<span class="zh">${cn}</span>`, false));
+  });
+  return wrap;
+}
+function partHead(title, sub) {
+  const p = el('div', 'part');
+  p.append(el('h3', '', `<span class="zh">${title}</span>` + (sub ? ` <em>${sub}</em>` : '')));
+  return p;
+}
+function secHead(id, zh, vi) {
+  const s = el('div', 'sec-head'); s.id = id;
+  s.append(el('h2', 'zh', zh), el('p', '', vi));
+  return s;
+}
+
+function build() {
+  const m = $('#exam');
+
+  /* ---------- 一、听力 ---------- */
+  m.append(secHead('sec-listen', '一、听 力', 'PHẦN NGHE · Câu 1–25'));
+
+  const ab = el('div', 'audio-box');
+  ab.append(el('h4', '', '🎧 File nghe HSK 2'));
+  const au = el('audio'); au.controls = true; au.preload = 'metadata'; au.src = 'assets/audio.mp3';
+  ab.append(au); m.append(ab);
+
+  m.append(partHead('第一部分', 'Câu 1–5 · Nghe và chọn tranh đúng'));
+  L1.forEach(q => {
+    const box = qShell(q.n, '');
+    box.querySelector('.q-text').remove();
+    box.append(imgOpts(q.n, ['A', 'B', 'C'], k => q.opts[k]));
+    m.append(box);
+  });
+
+  m.append(partHead('第二部分', 'Câu 6–15 · Nghe và nối với tranh'));
+  const b1 = el('div', 'bank');
+  b1.append(el('p', 'bank-ttl', 'Tranh cho câu 6–10'));
+  const g1 = el('div', 'bank-imgs');
+  L2BANK.forEach(o => { const f = el('figure'); f.innerHTML = `<span class="ph"><img src="assets/${o.img}.jpg" alt=""></span><figcaption>${o.k}</figcaption>`; g1.append(f); });
+  b1.append(g1); m.append(b1);
+  [6, 7, 8, 9, 10].forEach(n => { const q = qShell(n, '<span class="cn" style="color:var(--mut);font-size:14px">Chọn tranh phù hợp</span>'); q.append(letterOpts(n, ['A', 'B', 'C', 'D', 'E', 'F'])); m.append(q); });
+
+  const b2 = el('div', 'bank');
+  b2.append(el('p', 'bank-ttl', 'Tranh cho câu 11–15'));
+  const g2 = el('div', 'bank-imgs');
+  L3BANK.forEach(o => { const f = el('figure'); f.innerHTML = `<span class="ph"><img src="assets/${o.img}.jpg" alt=""></span><figcaption>${o.k}</figcaption>`; g2.append(f); });
+  b2.append(g2); m.append(b2);
+  [11, 12, 13, 14, 15].forEach(n => { const q = qShell(n, '<span class="cn" style="color:var(--mut);font-size:14px">Chọn tranh phù hợp</span>'); q.append(letterOpts(n, ['A', 'B', 'C', 'D', 'E'])); m.append(q); });
+
+  m.append(partHead('第三部分', 'Câu 16–25 · Nghe và chọn đáp án'));
+  L3Q.forEach(q => { const box = qShell(q.n, ''); box.querySelector('.q-text').remove(); box.append(textOpts(q.n, q.o)); m.append(box); });
+
+  /* ---------- 二、阅读 ---------- */
+  const d1 = el('div', 'divider');
+  d1.innerHTML = '<b class="zh">下面是阅读部分</b><span>Phần Đọc bắt đầu từ đây</span>';
+  m.append(d1);
+  m.append(secHead('sec-read', '二、阅 读', 'PHẦN ĐỌC · Câu 26–50'));
+
+  m.append(partHead('第一部分', 'Câu 26–30 · Nối câu với tranh'));
+  const b3 = el('div', 'bank');
+  b3.append(el('p', 'bank-ttl', 'Tranh cho câu 26–30'));
+  const g3 = el('div', 'bank-imgs');
+  R1BANK.forEach(o => { const f = el('figure'); f.innerHTML = `<span class="ph"><img src="assets/${o.img}.jpg" alt=""></span><figcaption>${o.k}</figcaption>`; g3.append(f); });
+  b3.append(g3); m.append(b3);
+  R1Q.forEach(q => {
+    const box = qShell(q.n, `<span class="cn zh">${q.c}</span>`);
+    box.append(letterOpts(q.n, ['A', 'B', 'C', 'D', 'E', 'F'])); m.append(box);
+  });
+
+  m.append(partHead('第二部分', 'Câu 31–35 · Chọn từ điền vào chỗ trống'));
+  const b4 = el('div', 'bank');
+  b4.append(el('p', 'bank-ttl', 'Từ cho sẵn'));
+  const w4 = el('div', 'bank-words');
+  R2BANK.forEach(([k, py, cn]) => w4.append(el('span', '', `<b>${k}</b><span class="zh">${cn}</span>`)));
+  b4.append(w4); m.append(b4);
+  R2Q.forEach(q => {
+    const head = q.lines.map(([py, cn]) => `<span class="cn zh">${cn}</span>`).join('');
+    const box = qShell(q.n, head);
+    box.append(letterOpts(q.n, ['A', 'B', 'C', 'D', 'E', 'F'])); m.append(box);
+  });
+
+  m.append(partHead('第三部分', 'Câu 36–45 · Nối câu hỏi với câu trả lời'));
+  const b5 = el('div', 'bank');
+  b5.append(el('p', 'bank-ttl', 'Câu trả lời cho câu 36–40'));
+  const l5 = el('div', 'bank-list');
+  R3BANK.forEach(([k, py, cn]) => l5.append(el('div', 'bank-row', `<b>${k}</b><span class="zh">${cn}</span>`)));
+  b5.append(l5); m.append(b5);
+  R3Q.forEach(q => {
+    const box = qShell(q.n, `<span class="cn zh">${q.c}</span>`);
+    box.append(letterOpts(q.n, ['A', 'B', 'C', 'D', 'E', 'F'])); m.append(box);
+  });
+
+  const b6 = el('div', 'bank');
+  b6.append(el('p', 'bank-ttl', 'Câu trả lời cho câu 41–45'));
+  const l6 = el('div', 'bank-list');
+  R4BANK.forEach(([k, py, cn]) => l6.append(el('div', 'bank-row', `<b>${k}</b><span class="zh">${cn}</span>`)));
+  b6.append(l6); m.append(b6);
+  R4Q.forEach(q => {
+    const box = qShell(q.n, `<span class="cn zh">${q.c}</span>`);
+    box.append(letterOpts(q.n, ['A', 'B', 'C', 'D', 'E'])); m.append(box);
+  });
+
+  m.append(partHead('第四部分', 'Câu 46–50 · Đọc đoạn văn và chọn đáp án'));
+  R5Q.forEach(q => {
+    const body = q.body.map(([py, cn]) => `<span class="cn zh">${cn}</span>`).join('');
+    const ask = `<div class="q-ask"><span class="cn zh">★ ${q.q[1]}</span></div>`;
+    const box = qShell(q.n, body + ask);
+    box.append(textOpts(q.n, q.o)); m.append(box);
+  });
+
+  /* ---------- 三、书写 ---------- */
+  const d2 = el('div', 'divider');
+  d2.innerHTML = '<b class="zh">下面是书写部分</b><span>Phần Viết bắt đầu từ đây</span>';
+  m.append(d2);
+  m.append(secHead('sec-write', '三、书 写', 'PHẦN VIẾT · Câu 51–60'));
+
+  m.append(partHead('第一部分', 'Câu 51–55 · Chọn bộ thủ còn thiếu'));
+  const b7 = el('div', 'bank');
+  b7.append(el('p', 'bank-ttl', 'Bộ thủ cho sẵn'));
+  const w7 = el('div', 'bank-words');
+  W1BANK.forEach(([k, cn]) => w7.append(el('span', '', `<b>${k}</b><span class="zh" style="font-size:19px">${cn}</span>`)));
+  b7.append(w7); m.append(b7);
+  W1Q.forEach(q => {
+    const box = qShell(q.n, '');
+    box.querySelector('.q-text').remove();
+    box.append(el('div', 'q-img', `<img src="assets/${q.img}.jpg" alt="">`));
+    box.append(letterOpts(q.n, ['A', 'B', 'C', 'D', 'E', 'F'])); m.append(box);
+  });
+
+  m.append(partHead('第二部分', 'Câu 56–60 · Viết chữ Hán vào chỗ trống'));
+  W2Q.forEach(q => {
+    const box = qShell(q.n, '');
+    const line = el('div', 'fill zh');
+    line.append(document.createTextNode(q.c[0]));
+    const inp = el('input'); inp.type = 'text'; inp.maxLength = 1; inp.setAttribute('aria-label', 'Câu ' + q.n);
+    inp.oninput = () => {
+      if (done) return;
+      const v = inp.value.trim();
+      if (v) { answers[q.n] = v; box.classList.add('answered'); }
+      else { delete answers[q.n]; box.classList.remove('answered'); }
+      refresh();
+    };
+    line.append(inp, document.createTextNode(q.c[1]));
+    box.append(line); m.append(box);
+  });
+}
+
+/* ================= TRẠNG THÁI ================= */
+function refresh() {
+  const n = Object.keys(answers).length;
+  $('#prog').textContent = n + '/60';
+  $('#barFill').style.width = (n / 60 * 100) + '%';
+  $('#leftCount').textContent = 60 - n;
+  $('.submit-hint').style.visibility = n === 60 ? 'hidden' : 'visible';
+}
+function fmt(s) { return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
+function tick() {
+  left--;
+  const c = $('#clock');
+  c.textContent = fmt(Math.max(0, left));
+  c.classList.toggle('warn', left <= 600 && left > 120);
+  c.classList.toggle('danger', left <= 120);
+  if (left <= 0) { clearInterval(timer); finish(true); }
+}
+
+/* ================= GỬI VỀ GOOGLE SHEET ================= */
+function sendToSheet(payload) {
+  if (!SHEET_URL) return;
+  try {
+    fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    }).catch(() => {});
+  } catch (e) { /* không chặn việc xem kết quả */ }
+}
+
+/* ================= CHẤM BÀI ================= */
+function finish(timeUp) {
+  if (done) return;
+  done = true;
+  clearInterval(timer);
+  document.querySelectorAll('audio').forEach(a => { a.pause(); a.controls = false; });
+  document.querySelectorAll('.fill input').forEach(i => i.disabled = true);
+
+  const parts = { listen: [1, 25], read: [26, 50], write: [51, 60] };
+  const score = { listen: 0, read: 0, write: 0 };
+  for (let n = 1; n <= 60; n++) {
+    const mine = (answers[n] || '').trim();
+    const ok = mine && mine === KEY[n];
+    if (ok) {
+      if (n <= 25) score.listen++; else if (n <= 50) score.read++; else score.write++;
+    }
+  }
+  const total = score.listen + score.read + score.write;
+  const detail = [];
+  for (let n = 1; n <= 60; n++) {
+    const mine = (answers[n] || '').trim();
+    detail.push({ n, chon: mine, dapAn: KEY[n], dung: !!mine && mine === KEY[n] });
+  }
+  const pts = Math.round(total / 60 * 200);   // thang điểm 200 của HSK
+  const pass = pts >= 120;
+
+  const endedAt = new Date();
+  const used = Math.min(DUR, DUR - Math.max(0, left));
+  sendToSheet({
+    hoTen: student,
+    batDau: startedAt ? startedAt.toISOString() : '',
+    nopBai: endedAt.toISOString(),
+    thoiGianLamBai: fmt(used),
+    thoiGianGiay: used,
+    tuDongNop: !!timeUp,
+    soCauDung: total,
+    tongSoCau: 60,
+    diem200: pts,
+    ketQua: pass ? 'ĐẠT' : 'CHƯA ĐẠT',
+    nghe: score.listen, doc: score.read, viet: score.write,
+    chiTiet: detail
+  });
+
+  const r = $('#result');
+  r.innerHTML = '';
+  if (timeUp) r.append(el('div', 'timeup', '⏱ Đã hết 60 phút — hệ thống tự động nộp bài.'));
+
+  const sc = el('div', 'score');
+  sc.innerHTML = `
+    <div class="who">Thí sinh: <b>${escapeHtml(student)}</b> · ${new Date().toLocaleString('vi-VN')}</div>
+    <div class="big">${pts}</div>
+    <div class="of">/ 200 điểm · đúng ${total}/60 câu</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass ? '✓ ĐẠT — HSK cấp 2' : '✗ CHƯA ĐẠT (cần 120 điểm)'}</div>
+    <p class="why">Thang điểm quy đổi: mỗi câu ≈ 3,33 điểm, tổng 200 điểm, đạt từ 120 điểm.</p>`;
+  r.append(sc);
+
+  const bd = el('div', 'breakdown');
+  bd.innerHTML = `
+    <div><b>${score.listen}/25</b><span>听力 · Nghe</span></div>
+    <div><b>${score.read}/25</b><span>阅读 · Đọc</span></div>
+    <div><b>${score.write}/10</b><span>书写 · Viết</span></div>`;
+  r.append(bd);
+
+  const rh = el('div', 'rev-head');
+  rh.append(el('h3', '', 'Chi tiết đáp án'));
+  r.append(rh);
+
+  const grid = el('div', 'rev-grid');
+  for (let n = 1; n <= 60; n++) {
+    const mine = (answers[n] || '').trim();
+    const ok = mine && mine === KEY[n];
+    const cell = el('div', 'cell ' + (ok ? 'ok' : 'bad'));
+    cell.innerHTML = `<b>${n}</b>` + (ok ? KEY[n] : `<span class="mine">${mine ? escapeHtml(mine) : '—'}</span>${KEY[n]}`);
+    grid.append(cell);
+  }
+  r.append(grid);
+  r.append(el('div', 'rev-note', 'Ô xanh là câu đúng. Ô đỏ hiển thị <i>đáp án bạn chọn</i> (gạch ngang) và <b>đáp án đúng</b> bên cạnh; dấu — nghĩa là bỏ trống.'));
+
+  const again = el('button', 'again', 'Làm lại từ đầu');
+  again.onclick = () => location.reload();
+  r.append(again);
+
+  $('#exam').classList.add('hidden');
+  $('#submitWrap').classList.add('hidden');
+  $('#bar').classList.add('hidden');
+  r.classList.remove('hidden');
+  window.scrollTo(0, 0);
+}
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+/* ================= KHỞI ĐỘNG ================= */
+$('#startBtn').onclick = () => {
+  const v = $('#nameInput').value.trim();
+  if (v.length < 2) { $('#nameErr').textContent = 'Vui lòng nhập họ tên (ít nhất 2 ký tự).'; $('#nameInput').focus(); return; }
+  student = v;
+  startedAt = new Date();
+  $('#barName').textContent = v;
+  $('#gate').classList.add('hidden');
+  build();
+  $('#bar').classList.remove('hidden');
+  $('#exam').classList.remove('hidden');
+  $('#submitWrap').classList.remove('hidden');
+  refresh();
+  $('#clock').textContent = fmt(left);
+  timer = setInterval(tick, 1000);
+};
+$('#nameInput').addEventListener('keydown', e => { if (e.key === 'Enter') $('#startBtn').click(); });
+
+$('#submitBtn').onclick = () => {
+  const n = Object.keys(answers).length;
+  $('#modalText').textContent = n === 60
+    ? 'Bạn đã trả lời đủ 60 câu. Nộp bài và xem kết quả?'
+    : `Bạn còn ${60 - n} câu chưa trả lời. Vẫn nộp bài?`;
+  $('#modal').classList.remove('hidden');
+};
+$('#modalNo').onclick = () => $('#modal').classList.add('hidden');
+$('#modalYes').onclick = () => { $('#modal').classList.add('hidden'); finish(false); };
+window.addEventListener('beforeunload', e => { if (!done && timer) { e.preventDefault(); e.returnValue = ''; } });
+})();
+
+</script>
+</body>
+</html>
