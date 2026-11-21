@@ -221,8 +221,9 @@ button{font:inherit; cursor:pointer}
 
 /* ẩn phiên âm */
 .py{display:none !important}
-/* gợi ý pinyin cho câu 56-60 */
-.q-text .hint{display:block; font-size:13px; color:var(--mut); letter-spacing:.02em; margin-bottom:2px}
+/* gợi ý pinyin cho chữ cần điền (56-60) */
+.slot{display:inline-flex; flex-direction:column; align-items:center; margin:0 2px}
+.slot-py{font-family:"Noto Sans",sans-serif; font-size:14px; font-weight:600; color:var(--accent); line-height:1.2; margin-bottom:3px}
 
 </style>
 </head>
@@ -412,11 +413,11 @@ const W1Q = [
 
 // Viết phần 2: 56–60
 const W2Q = [
- {n:56, p:'Wǒ dào ( ) xiào ménkǒu le, nǐ ne?', c:['我 到（','）校 门口 了，你 呢？']},
- {n:57, p:'Zhè cì kǎoshì tā kǎole dì-yī ( ).', c:['这 次 考试 他 考了 第一（','）。']},
- {n:58, p:'Diànyǐngyuàn ( ) miàn kāile yì jiā dà chāoshì.', c:['电影院（','）面 开了 一 家 大 超市。']},
- {n:59, p:'Wǒ shì xīn lái de, suǒyǐ nín ( ) néng méi jiànguo wǒ.', c:['我 是 新 来 的，所以 您（','）能 没 见过 我。']},
- {n:60, p:'Dōu shí diǎn le, nǐ ( ) shénme hái bú qù jīchǎng?', c:['都 十 点 了，你（','）什么 还 不 去 机场？']}
+ {n:56, h:'xué', p:'Wǒ dào ( ) xiào ménkǒu le, nǐ ne?', c:['我 到（','）校 门口 了，你 呢？']},
+ {n:57, h:'míng', p:'Zhè cì kǎoshì tā kǎole dì-yī ( ).', c:['这 次 考试 他 考了 第一（','）。']},
+ {n:58, h:'hòu', p:'Diànyǐngyuàn ( ) miàn kāile yì jiā dà chāoshì.', c:['电影院（','）面 开了 一 家 大 超市。']},
+ {n:59, h:'kě', p:'Wǒ shì xīn lái de, suǒyǐ nín ( ) néng méi jiànguo wǒ.', c:['我 是 新 来 的，所以 您（','）能 没 见过 我。']},
+ {n:60, h:'wèi', p:'Dōu shí diǎn le, nǐ ( ) shénme hái bú qù jīchǎng?', c:['都 十 点 了，你（','）什么 还 不 去 机场？']}
 ];
 
 </script>
@@ -602,7 +603,7 @@ function build() {
 
   m.append(partHead('第二部分', 'Câu 56–60 · Viết chữ Hán vào chỗ trống'));
   W2Q.forEach(q => {
-    const box = qShell(q.n, `<span class="hint">${q.p}</span>`);
+    const box = qShell(q.n, '');
     const line = el('div', 'fill zh');
     line.append(document.createTextNode(q.c[0]));
     const inp = el('input'); inp.type = 'text'; inp.maxLength = 1; inp.setAttribute('aria-label', 'Câu ' + q.n);
@@ -613,7 +614,9 @@ function build() {
       else { delete answers[q.n]; box.classList.remove('answered'); }
       refresh();
     };
-    line.append(inp, document.createTextNode(q.c[1]));
+    const slot = el('span', 'slot');
+    slot.append(el('span', 'slot-py', q.h), inp);
+    line.append(slot, document.createTextNode(q.c[1]));
     box.append(line); m.append(box);
   });
 }
