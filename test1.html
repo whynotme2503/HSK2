@@ -221,6 +221,8 @@ button{font:inherit; cursor:pointer}
 
 /* ẩn phiên âm */
 .py{display:none !important}
+/* gợi ý pinyin cho câu 56-60 */
+.q-text .hint{display:block; font-size:13px; color:var(--mut); letter-spacing:.02em; margin-bottom:2px}
 
 </style>
 </head>
@@ -600,7 +602,7 @@ function build() {
 
   m.append(partHead('第二部分', 'Câu 56–60 · Viết chữ Hán vào chỗ trống'));
   W2Q.forEach(q => {
-    const box = qShell(q.n, '');
+    const box = qShell(q.n, `<span class="hint">${q.p}</span>`);
     const line = el('div', 'fill zh');
     line.append(document.createTextNode(q.c[0]));
     const inp = el('input'); inp.type = 'text'; inp.maxLength = 1; inp.setAttribute('aria-label', 'Câu ' + q.n);
